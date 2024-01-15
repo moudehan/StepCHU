@@ -2,7 +2,7 @@ name: React Native CI
 
 on:
   push:
-    branches: [main]
+    branches: [dev-front-hanane]
   pull_request:
     branches: [main]
 
