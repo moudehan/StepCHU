@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
   SafeAreaView,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -32,7 +31,7 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
   useEffect(() => {
     const fetchUserData = async () => {
       const userId = await AsyncStorage.getItem("userId");
-      const user = usersData.find((u) => u.id.toString() === userId);
+      const user = usersData.find((u: any) => u.id.toString() === userId);
       if (user) {
         setUserData({ username: user.username, email: user.email });
       }
@@ -49,7 +48,7 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
 
   const handleLogout = async () => {
     setIsLoading(true);
-    await AsyncStorage.clear(); // Supprime toutes les données d'AsyncStorage
+    await AsyncStorage.clear();
     setTimeout(() => {
       setIsLoading(false);
       navigation.navigate("/");

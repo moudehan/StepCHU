@@ -37,7 +37,7 @@ const OthersBlocs = ({ navigation }: AboutPageProps) => {
         showsHorizontalScrollIndicator={false}
         style={styles.scrollContainer}
       >
-        {data.map((item, index) => (
+        {data.map((item) => (
           <TouchableOpacity
             style={styles.block}
             onPress={() => handlePress(item.screen)}
