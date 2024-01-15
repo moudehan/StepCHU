@@ -69,6 +69,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
     setIsUserDataLoaded(false);
   };
 
+  // eslint-disable-next-line comma-dangle
   useFocusEffect(
     React.useCallback(() => {
       setUserId("");
@@ -76,7 +77,6 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       setSecurityQuestion("");
       setSecurityAnswer("");
       setIsUserDataLoaded(false);
-      // eslint-disable-next-line comma-dangle
     }, [])
   );
 
@@ -104,11 +104,6 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
         console.log("Question de sécurité mise à jour.");
         navigation.navigate("home");
       } catch (error) {
-        // eslint-disable-next-line comma-dangle
-        console.error(
-          "Erreur lors de la mise à jour de la question de sécurité :",
-          error
-        );
         setCustomError("Erreur lors de la mise à jour. Veuillez réessayer.");
       }
     }
