@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "username": "user1",
+    "email": "user1@gmail.com",
+    "fullName": "John Doe",
+    "steps": 5000,
+    "badges": ["1", "2"]
+  },
+  {
+    "id": 2,
+    "username": "user2",
+    "email": "user2@gmail.com",
+    "fullName": "Jane Doe",
+    "steps": 10000,
+    "badges": ["3", "4"]
+  }
+]
