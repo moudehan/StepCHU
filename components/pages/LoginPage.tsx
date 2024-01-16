@@ -10,7 +10,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
+import { SelectList } from "react-native-dropdown-select-list";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
@@ -57,7 +57,6 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       }));
       setSecurityQuestions(questions);
     };
-
     fetchSecurityQuestions();
   }, []);
 
@@ -69,7 +68,6 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
     setIsUserDataLoaded(false);
   };
 
-  // eslint-disable-next-line comma-dangle
   useFocusEffect(
     React.useCallback(() => {
       setUserId("");
@@ -77,7 +75,6 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       setSecurityQuestion("");
       setSecurityAnswer("");
       setIsUserDataLoaded(false);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
 
@@ -120,7 +117,6 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
     try {
       const userDocRef = doc(db, "utilisateurs", userId);
       const userDocSnap = await getDoc(userDocRef);
-
       if (userDocSnap.exists()) {
         const userData = userDocSnap.data();
         if (!userData.phoneId || userData.phoneId === deviceUUID) {
@@ -206,31 +202,39 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
         </View>
         {isUserDataLoaded && !securityQuestion && (
           <>
-            <RNPickerSelect
-              onValueChange={(value) => setSelectedQuestion(value)}
-              items={securityQuestions.map((question) => ({
-                label: question.name,
-                value: question.name,
-              }))}
-              style={{
-                inputIOS: {
-                  color: "black",
-                  height: 50,
-                  width: 150,
-                },
-                inputAndroid: {
-                  color: "red",
-                  height: 50,
-                  width: 150,
-                },
-              }}
-              value={selectedQuestion}
-              useNativeAndroidPickerStyle={false}
-              placeholder={{
-                label: "Sélectionnez une question...",
-                value: null,
-              }}
-            />
+            <View style={styles.selectStyle}>
+              <SelectList
+                setSelected={(val: any) => setSelectedQuestion(val)}
+                data={securityQuestions.map((question) => ({
+                  key: question.value,
+                  value: question.name,
+                }))}
+                save="value"
+                placeholder="Sélectionnez une question..."
+                searchPlaceholder="Chercher une question"
+                boxStyles={{
+                  borderWidth: 1,
+                  borderColor: "#B0E0E6",
+                  borderRadius: 25,
+                  width: 270,
+                  marginTop: 5,
+                  marginBottom: 10,
+                }}
+                inputStyles={{
+                  color: "#10669D",
+                }}
+                dropdownStyles={{
+                  borderWidth: 1,
+                  borderColor: "#B0E0E6",
+                  borderRadius: 25,
+                  marginTop: 0,
+                  marginBottom: 10,
+                }}
+                dropdownTextStyles={{
+                  color: "#10669D",
+                }}
+              />
+            </View>
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -297,12 +301,18 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
 };
 
 const styles = StyleSheet.create({
+  selectStyle: {
+    flex: 1,
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   screen: {
     flex: 1,
     backgroundColor: "#146591",
     paddingHorizontal: 24,
+    paddingVertical: 34,
     width: "100%",
-    height: "150%",
   },
   card: {
     backgroundColor: "white",
@@ -336,7 +346,7 @@ const styles = StyleSheet.create({
   backButton: {
     alignSelf: "flex-start",
     marginTop: -140,
-    marginBottom: 100,
+    marginBottom: 80,
   },
   inputContainer: {
     flexDirection: "row",
