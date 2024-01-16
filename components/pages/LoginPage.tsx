@@ -77,6 +77,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       setSecurityQuestion("");
       setSecurityAnswer("");
       setIsUserDataLoaded(false);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
 
