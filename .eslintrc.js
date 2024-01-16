@@ -11,15 +11,5 @@ module.exports = {
   rules: {
     "no-unused-vars": "error",
     "unused-imports/no-unused-imports": "error",
-    "comma-dangle": [
-      "error",
-      {
-        arrays: "never",
-        objects: "never",
-        imports: "never",
-        exports: "never",
-        functions: "never",
-      },
-    ],
   },
 };
