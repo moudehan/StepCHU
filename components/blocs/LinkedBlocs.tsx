@@ -39,8 +39,9 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
         showsHorizontalScrollIndicator={false}
         style={styles.scrollContainer}
       >
-        {data.map((item) => (
+        {data.map((item, index) => (
           <TouchableOpacity
+            key={index}
             style={styles.block}
             onPress={() => handlePress(item.screen)}
           >
