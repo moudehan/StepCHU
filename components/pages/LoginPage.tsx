@@ -99,7 +99,6 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
           securityQuestion: selectedQuestion,
           securityAnswer: securityAnswer,
         });
-        console.log("Question de sécurité mise à jour.");
         navigation.navigate("home");
       } catch (error) {
         setCustomError("Erreur lors de la mise à jour. Veuillez réessayer.");
