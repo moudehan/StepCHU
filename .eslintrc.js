@@ -20,6 +20,5 @@ module.exports = {
       },
     ],
     "no-unused-vars": "error",
-    "unused-imports/no-unused-imports": "error",
   },
 };
