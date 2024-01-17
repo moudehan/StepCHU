@@ -42,7 +42,7 @@ export default function App() {
     };
 
     verifyUser();
-  }, []);
+  }, [isAuthenticated]);
 
   const initialRouteName = isAuthenticated ? "home" : "/";
 
