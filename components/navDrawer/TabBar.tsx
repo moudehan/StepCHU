@@ -52,13 +52,10 @@ const TabBar: React.FC<TabBarProps> = ({
 
   return (
     <View style={styles.tabBar}>
-      {tabIcons.map((tab) => {
+      {tabIcons.map((tab, index) => {
         const isHomeTab = tab.name === "home";
         return (
-          <View
-            // key={index}
-            style={styles.tabItemContainer}
-          >
+          <View key={index} style={styles.tabItemContainer}>
             {isHomeTab && <View style={styles.homeButtonBackground} />}
             <TouchableOpacity
               onPress={() => handleTabPress(tab)}
