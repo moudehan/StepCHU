@@ -9,8 +9,6 @@ module.exports = {
   },
   plugins: ["unused-imports"],
   rules: {
-    "no-unused-vars": "error",
-    "unused-imports/no-unused-imports": "error",
     "comma-dangle": [
       "error",
       {
@@ -21,5 +19,7 @@ module.exports = {
         functions: "never",
       },
     ],
+    "no-unused-vars": "error",
+    "unused-imports/no-unused-imports": "error",
   },
 };
