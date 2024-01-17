@@ -154,11 +154,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#E26C61",
     alignSelf: "center",
   },
-  tabLabel: {
-    fontSize: 10,
-    marginTop: 6,
-    textTransform: "capitalize",
-  },
 });
 
 export default TabBar;
