@@ -52,7 +52,7 @@ const TabBar: React.FC<TabBarProps> = ({
 
   return (
     <View style={styles.tabBar}>
-      {tabIcons.map((tab, index) => {
+      {tabIcons.map((tab) => {
         const isHomeTab = tab.name === "home";
         return (
           <View
