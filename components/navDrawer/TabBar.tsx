@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
 interface TabBarProps {
@@ -28,7 +28,8 @@ const TabBar: React.FC<TabBarProps> = ({
     },
     {
       name: "home",
-      icon: "home-outline",
+      icon: "",
+      image: require("../../assets/step1.png"),
       screen: "home",
     },
     {
@@ -68,11 +69,15 @@ const TabBar: React.FC<TabBarProps> = ({
               {activeTab === tab.name && (
                 <View style={isHomeTab ? {} : styles.activeTabHighlight} />
               )}
-              <Icon
-                name={tab.icon}
-                size={activeTab === tab.name ? 30 : 29}
-                color={activeTab === tab.name ? "#E26C61" : "#A3A3A3"}
-              />
+              {isHomeTab ? (
+                <Image source={tab.image} style={{ width: 40, height: 40 }} />
+              ) : (
+                <Icon
+                  name={tab?.icon}
+                  size={activeTab === tab.name ? 30 : 29}
+                  color={activeTab === tab.name ? "#E26C61" : "#A3A3A3"}
+                />
+              )}
             </TouchableOpacity>
             <Text
               style={{
