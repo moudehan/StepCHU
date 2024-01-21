@@ -12,13 +12,13 @@ const data = [
   {
     title: "LES Actulaités",
     description: "Découvrez les nouveaux challenges.",
-    image: require("../../assets/step1.png"),
+    image: require("../../assets/news.png"),
     screen: "Actualites",
   },
   {
     title: "CHU 2024",
     description: "Actulaités du CHU ...",
-    image: require("../../assets/step1.png"),
+    image: require("../../assets/news.png"),
     screen: "Actualites",
   },
 ];

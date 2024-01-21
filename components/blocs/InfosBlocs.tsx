@@ -1,5 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons"; // Importez FontAwesome ou une autre collection d'icônes
+import Icon2 from "react-native-vector-icons/Ionicons"; // Importez FontAwesome ou une autre collection d'icônes
 
 const InfoBlocks = () => {
   return (
@@ -8,13 +10,19 @@ const InfoBlocks = () => {
         <View style={styles.gridTitle}>
           <Text style={styles.gridText}>Distance</Text>
         </View>
-        <Text style={styles.blockTitle}>2,50 KM</Text>
+        <View style={styles.content}>
+          <Icon2 name="location" size={20} color="#FFBB00" />
+          <Text style={styles.blockTitle}>2,50 KM</Text>
+        </View>
       </View>
       <View style={styles.block}>
         <View style={styles.gridTitle}>
           <Text style={styles.gridText}>Calories</Text>
         </View>
-        <Text style={styles.blockTitle}>500,50</Text>
+        <View style={styles.content}>
+          <Icon name="fire" size={30} color="red" />
+          <Text style={styles.blockTitle}>500,50</Text>
+        </View>
       </View>
     </View>
   );
@@ -52,6 +60,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 20,
+    marginLeft: 5,
   },
   gridTitle: {
     position: "absolute",
@@ -70,6 +79,10 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontWeight: "bold",
     paddingHorizontal: 5,
+  },
+  content: {
+    flexDirection: "row", // Aligner les éléments horizontalement
+    alignItems: "center",
   },
 });
 
