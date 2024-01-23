@@ -1,6 +1,5 @@
+import { getFirestore } from "@firebase/firestore";
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-
 const firebaseConfig = {
   apiKey: "AIzaSyBRPrKkC46xusJRSuOI4QyiFI8y50a4Q8g",
   authDomain: "stepchu-db916.firebaseapp.com",
