@@ -25,11 +25,8 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "permissions": ["LOCATION", "ACTIVITY_RECOGNITION"],
     "plugins": [
       "./androidManifestPlugin.js",
-
-      "react-native-health",
       [
         "expo-build-properties",
         {
@@ -37,12 +34,7 @@
             "compileSdkVersion": 33,
             "targetSdkVersion": 33,
             "buildToolsVersion": "33.0.0",
-            "minSdkVersion": 26,
-            "permissions": [
-              "android.permission.health.READ_STEPS",
-              "android.permission.health.READ_FLOORS_CLIMBED",
-              "android.permission.health.READ_DISTANCE"
-            ]
+            "minSdkVersion": 26
           }
         }
       ]
