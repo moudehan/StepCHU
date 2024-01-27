@@ -13,23 +13,41 @@ import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
 import { db } from "../../fireBase/FirebaseConfig";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import NewsletterModal from "../Modals/NewsletterModal";
 
 interface NewsPageProps {
   navigation: any;
+  route?: any;
 }
 
 interface Newsletter {
+  id: string;
   description: string;
   name: string;
   pdfUrl: string;
 }
 
-export default function NewsPage({ navigation }: NewsPageProps) {
+export default function NewsPage({ navigation, route }: NewsPageProps) {
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedNewsletter, setSelectedNewsletter] =
+    useState<Newsletter | null>(null);
+
+  useEffect(() => {
+    if (route?.params?.id) {
+      const newsletterId = route.params.id;
+      if (newsletters.length > 0) {
+        const newsletter = newsletters.find((n) => n.id === newsletterId);
+        if (newsletter) {
+          setSelectedNewsletter(newsletter);
+          setModalVisible(true);
+        }
+      }
+    }
+  }, [route?.params?.id, newsletters]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {});
-
     const fetchNewsletters = async () => {
       const querySnapshot = await getDocs(collection(db, "newsletters"));
       const newslettersData = querySnapshot.docs.map((doc) => {
@@ -60,6 +78,11 @@ export default function NewsPage({ navigation }: NewsPageProps) {
         title="Actualités"
         navigation={navigation}
         paramBack={true}
+      />
+      <NewsletterModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        newsletter={selectedNewsletter}
       />
       <ScrollView style={styles.container}>
         <View style={styles.headerTitleContainer}>
@@ -97,7 +120,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingVertical: 20,
+    paddingVertical: 50,
   },
 
   headerTitleContainer: {
