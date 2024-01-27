@@ -44,7 +44,7 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
   };
 
   return (
-    <View>
+    <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Actualités</Text>
       </View>
@@ -81,6 +81,9 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    marginBottom: 20,
+  },
   headerContainer: {
     backgroundColor: "#FFBB00",
     paddingHorizontal: 16,
