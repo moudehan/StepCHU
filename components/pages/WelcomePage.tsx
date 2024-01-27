@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, SafeAreaView } from "react-native";
+import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
 import usersData from "../../data/users.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TabBar from "../navDrawer/TabBar";
 import NavBar from "../navDrawer/NavBar";
 import InfoBlocks from "../blocs/InfosBlocs";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
 import OthersBlocs from "../blocs/OtherBlocs";
 import LinkedBlocks from "../blocs/LinkedBlocs";
+import Histogram from "../graphs/Histogram";
+import CercleProgress from "../graphs/CircularProgress";
 
 interface WelcomePageProps {
   navigation: any;
 }
 export default function WelcomePage({ navigation }: WelcomePageProps) {
-  const goalSteps = 10000;
   const [activeTab, setActiveTab] = useState("home");
   const [currentSteps, setCurrentSteps] = useState(2500);
 
@@ -39,8 +39,6 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.blueContainer}></View>
-
       {/* NavBar */}
       <NavBar
         paramBack={false}
@@ -48,33 +46,36 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
         title="StepCHU"
         navigation={navigation}
       />
-      {/* Contenu principal */}
-      <View style={styles.container}>
-        <View style={styles.circleContainer}>
-          <View style={styles.innerCircleBackground}>
-            <AnimatedCircularProgress
-              size={150}
-              width={15}
-              rotation={270}
-              fill={(currentSteps / goalSteps) * 100}
-              tintColor="#F86A53"
-              backgroundColor="#EAF2FF"
-            >
-              {() => (
-                <Text style={styles.stepsText}>
-                  <Text style={styles.stepsCount}>{currentSteps}</Text>
-                  <Text style={styles.stepsLabel}> {"\nPas"}</Text>
-                </Text>
-              )}
-            </AnimatedCircularProgress>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.contentContainer}
+      >
+        <View style={styles.genericBlock}>
+          <View style={styles.blueContainer}></View>
+          <Text style={styles.stepsTitle}>Nombre de pas aujord'hui</Text>
+          <View style={styles.circleContainer}>
+            <CercleProgress currentSteps={currentSteps}></CercleProgress>
           </View>
         </View>
-        <View style={styles.blueContainer1}></View>
-        <InfoBlocks></InfoBlocks>
-        <OthersBlocs navigation={navigation}></OthersBlocs>
-        <LinkedBlocks navigation={navigation}></LinkedBlocks>
-      </View>
-
+        <View style={styles.genericBlock}>
+          <InfoBlocks></InfoBlocks>
+        </View>
+        <View style={styles.genericBlock}>
+          <Text style={styles.histogramTitle}>Historique des pas :</Text>
+        </View>
+        <View style={styles.genericBlockHistogram}>
+          <Histogram></Histogram>
+        </View>
+        <View style={styles.genericBlock}>
+          <OthersBlocs navigation={navigation}></OthersBlocs>
+        </View>
+        <View style={styles.linkedBlocksWrapper}>
+          <View style={styles.blueContainer1} />
+          <View style={styles.linkedBlocksContainer}>
+            <LinkedBlocks navigation={navigation} />
+          </View>
+        </View>
+      </ScrollView>
       {/* TabBar */}
       <TabBar
         activeTab={activeTab}
@@ -90,27 +91,57 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
+  scrollView: {
+    flex: 1,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  circleContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  genericBlock: {
+    width: "100%",
+    alignItems: "center",
+  },
+  genericBlockHistogram: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 50,
+  },
+  linkedBlocksWrapper: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 30,
+  },
   blueContainer: {
     position: "absolute",
-    bottom: 390,
-    left: 0,
+    top: -20,
+    left: -10,
     right: 0,
-    height: "100%",
+    height: "70%",
+    width: "120%",
     backgroundColor: "#1a8cc9",
     borderBottomWidth: 0,
     borderBottomColor: "transparent",
-    transform: [{ rotateZ: "-85deg" }],
+    transform: [{ rotateZ: "5deg" }],
   },
   blueContainer1: {
     position: "absolute",
-    bottom: -250,
-    left: 0,
+    bottom: -5,
+    left: -15,
     right: 0,
-    height: "100%",
+    height: "90%",
+    width: "120%",
     backgroundColor: "#1a8cc9",
     borderBottomWidth: 0,
     borderBottomColor: "transparent",
-    transform: [{ rotateZ: "-85deg" }],
+    transform: [{ rotateZ: "5deg" }],
   },
   container: {
     flex: 1,
@@ -125,27 +156,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
-  circleContainer: {
-    marginTop: -70,
-    alignItems: "center",
-    justifyContent: "center",
+  linkedBlocksContainer: {
+    marginBottom: 40,
   },
-  titleBelowCircle: {
+  stepsTitle: {
     fontSize: 16,
-    color: "#363F5E",
-    fontWeight: "bold",
-    marginTop: 150,
+    color: "white",
+    marginTop: 10,
   },
-  stepsCount: {
-    color: "#363F5E",
-    fontWeight: "bold",
-    fontSize: 30,
-  },
-  stepsText: {
+  histogramTitle: {
     fontSize: 20,
-    color: "#EAF2FF",
-    textAlign: "center",
+    color: "#146591",
+    marginTop: 20,
   },
-  stepsLabel: {},
 });
