@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 35,
     paddingBottom: 15,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    // borderBottomLeftRadius: 10,
+    // borderBottomRightRadius: 10,
   },
   navBarTitle: {
     color: "#DADDDD",

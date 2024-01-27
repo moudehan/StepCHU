@@ -1,4 +1,5 @@
-import React from "react";
+import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,30 +8,43 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import { db } from "../../fireBase/FirebaseConfig";
 
-const data = [
-  {
-    title: "LES Actulaités",
-    description: "Découvrez les nouveaux challenges.",
-    image: require("../../assets/news.png"),
-    screen: "Actualites",
-  },
-  {
-    title: "CHU 2024",
-    description: "Actulaités du CHU ...",
-    image: require("../../assets/news.png"),
-    screen: "Actualites",
-  },
-];
 interface AboutPageProps {
   navigation: any;
 }
+interface Newsletter {
+  id: string;
+  description: string;
+  name: string;
+  pdfUrl: string;
+}
 const LinkedBlocks = ({ navigation }: AboutPageProps) => {
-  const handlePress = (screen: string) => {
-    navigation.navigate(screen);
+  const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
+
+  useEffect(() => {
+    const fetchNewsletters = async () => {
+      const querySnapshot = await getDocs(collection(db, "newsletters"));
+      const newslettersData = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          description: data.description,
+          name: data.name,
+          pdfUrl: data.pdfUrl,
+        };
+      });
+      setNewsletters(newslettersData);
+    };
+    fetchNewsletters();
+  }, []);
+
+  const handlePress = (newsletterId: string) => {
+    navigation.navigate("Actualites", { id: newsletterId });
   };
+
   return (
-    <View>
+    <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Actualités</Text>
       </View>
@@ -39,18 +53,25 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
         showsHorizontalScrollIndicator={false}
         style={styles.scrollContainer}
       >
-        {data.map((item, index) => (
+        {newsletters.map((item, index) => (
           <TouchableOpacity
             key={index}
             style={styles.block}
-            onPress={() => handlePress(item.screen)}
+            onPress={() => handlePress(item.id)}
           >
             <View style={styles.textContainer}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.title}>{item.name}</Text>
+              <Text style={styles.description}>
+                {item.description.length > 30
+                  ? `${item.description.substring(0, 40)}...`
+                  : item.description}
+              </Text>
             </View>
             <View style={styles.imageContainer}>
-              <Image source={item.image} style={styles.image} />
+              <Image
+                source={require("../../assets/news.png")}
+                style={styles.image}
+              />
             </View>
           </TouchableOpacity>
         ))}
@@ -60,6 +81,9 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    marginBottom: 20,
+  },
   headerContainer: {
     backgroundColor: "#FFBB00",
     paddingHorizontal: 16,
