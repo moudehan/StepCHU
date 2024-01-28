@@ -26,23 +26,22 @@ export default function App() {
           ) {
             setIsAuthenticated(true); // Utilisateur authentifié
           } else {
-            setIsAuthenticated(false); // Redirection vers la page de connexion
             await AsyncStorage.removeItem("userId");
             await AsyncStorage.removeItem("phoneId");
+            setIsAuthenticated(false); // Redirection vers la page de connexion
           }
         } else {
-          console.log("Aucun utilisateur ou phoneId stocké trouvé");
           setIsAuthenticated(false);
         }
       } catch (error) {
-        console.error("Erreur lors de la vérification de l'utilisateur", error);
         setIsAuthenticated(false);
       }
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     };
-
     verifyUser();
-  }, [isAuthenticated]);
+  }, []);
 
   const initialRouteName = isAuthenticated ? "home" : "/";
 
