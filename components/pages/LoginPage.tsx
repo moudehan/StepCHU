@@ -107,6 +107,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
   };
 
   const handleLogin = async () => {
+    setCustomError("");
     if (!userId) {
       setCustomError("Veuillez entrer un ID utilisateur.");
       return;
@@ -143,6 +144,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
   };
 
   const verifySecurityAnswer = async () => {
+    setCustomError("");
     if (!userId.trim()) {
       setCustomError("Veuillez entrer un ID utilisateur.");
       return;
