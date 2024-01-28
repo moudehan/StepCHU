@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  BackHandler,
+} from "react-native";
 import usersData from "../../data/users.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TabBar from "../navDrawer/TabBar";
@@ -16,6 +23,18 @@ interface WelcomePageProps {
 export default function WelcomePage({ navigation }: WelcomePageProps) {
   const [activeTab, setActiveTab] = useState("home");
   const [currentSteps, setCurrentSteps] = useState(2500);
+
+  useEffect(() => {
+    const onBackPress = () => {
+      BackHandler.exitApp();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      onBackPress
+    );
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     const getUserId = async () => {
