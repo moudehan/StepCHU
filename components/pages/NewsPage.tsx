@@ -159,15 +159,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginVertical: 20,
     marginHorizontal: 20,
-    flexDirection: "row", // Organiser les éléments horizontalement
-    justifyContent: "space-between", // Espacer les éléments
+    flexDirection: "row",
+    justifyContent: "space-between",
     shadowOffset: {
-      width: 0, // Décalage horizontal de l'ombre
-      height: 2, // Décalage vertical de l'ombre
+      width: 0,
+      height: 2,
     },
-    shadowOpacity: 0.25, // Opacité de l'ombre
-    shadowRadius: 3.84, // Rayon de flou de l'ombre
-    elevation: 5, // Elevation pour Android
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   gridTitle: {
     position: "absolute",
@@ -189,23 +189,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   leftContainer: {
-    flex: 1, // Prendre la moitié de l'espace disponible
+    flex: 1,
     padding: 20,
     paddingTop: 30,
-    justifyContent: "center", // Centrer verticalement
+    justifyContent: "center",
   },
   rightContainer: {
-    width: 60, // Largeur fixe pour le bouton
+    width: 60,
     paddingRight: 20,
-    justifyContent: "center", // Centrer verticalement
-    alignItems: "center", // Centrer horizontalement
+    justifyContent: "center",
+    alignItems: "center",
   },
   separator: {
     height: "100%",
-    width: 2, // Un peu plus épais pour plus de visibilité
+    width: 2,
     backgroundColor: "#146591",
     transform: [{ rotate: "15deg" }],
-    marginRight: 20, // On décale un peu le séparateur vers la gauche
+    marginRight: 20,
   },
   title: {
     fontSize: 20,
