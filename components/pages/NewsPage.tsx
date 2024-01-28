@@ -84,7 +84,10 @@ export default function NewsPage({ navigation, route }: NewsPageProps) {
         onClose={() => setModalVisible(false)}
         newsletter={selectedNewsletter}
       />
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.contentContainer}
+      >
         <View style={styles.headerTitleContainer}>
           <View style={styles.headerLine} />
           <Text style={styles.headerTitle}>Newsletter</Text>
@@ -92,14 +95,18 @@ export default function NewsPage({ navigation, route }: NewsPageProps) {
         </View>
         {newsletters.map((newsletter, index) => (
           <View key={index} style={styles.newsletterContainer}>
-            <Text style={styles.title}>{newsletter.name}</Text>
-            <Text style={styles.description}>{newsletter.description}</Text>
+            <View style={styles.gridTitle}>
+              <Text style={styles.gridText}>{newsletter.name}</Text>
+            </View>
+            <View style={styles.leftContainer}>
+              <Text style={styles.description}>{newsletter.description}</Text>
+            </View>
+            <View style={styles.separator} />
             <TouchableOpacity
-              style={styles.downloadButton}
+              style={styles.rightContainer}
               onPress={() => handleDownloadPDF(newsletter.pdfUrl)}
             >
-              <Icon name="file-download" size={20} color="#FFF" />
-              <Text style={styles.buttonText}>PDF Download</Text>
+              <Icon name="cloud-download" size={50} color="#F86A53" />
             </TouchableOpacity>
           </View>
         ))}
@@ -118,11 +125,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f2f2f2",
   },
-  container: {
+  scrollView: {
     flex: 1,
-    paddingVertical: 50,
+    marginBottom: 80,
   },
-
+  contentContainer: {
+    flexGrow: 1,
+    paddingVertical: 20,
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
   headerTitleContainer: {
     alignItems: "center",
     marginBottom: 20,
@@ -144,9 +156,56 @@ const styles = StyleSheet.create({
   newsletterContainer: {
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 20,
     marginBottom: 20,
+    marginVertical: 20,
     marginHorizontal: 20,
+    flexDirection: "row", // Organiser les éléments horizontalement
+    justifyContent: "space-between", // Espacer les éléments
+    shadowOffset: {
+      width: 0, // Décalage horizontal de l'ombre
+      height: 2, // Décalage vertical de l'ombre
+    },
+    shadowOpacity: 0.25, // Opacité de l'ombre
+    shadowRadius: 3.84, // Rayon de flou de l'ombre
+    elevation: 5, // Elevation pour Android
+  },
+  gridTitle: {
+    position: "absolute",
+    top: -15,
+    left: 10,
+    width: 150,
+    height: 40,
+    backgroundColor: "#146591",
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopLeftRadius: 6,
+    borderBottomRightRadius: 6,
+    overflow: "visible",
+  },
+  gridText: {
+    color: "#FFF",
+    fontWeight: "bold",
+    fontSize: 20,
+    paddingHorizontal: 5,
+  },
+  leftContainer: {
+    flex: 1, // Prendre la moitié de l'espace disponible
+    padding: 20,
+    paddingTop: 30,
+    justifyContent: "center", // Centrer verticalement
+  },
+  rightContainer: {
+    width: 60, // Largeur fixe pour le bouton
+    paddingRight: 20,
+    justifyContent: "center", // Centrer verticalement
+    alignItems: "center", // Centrer horizontalement
+  },
+  separator: {
+    height: "100%",
+    width: 2, // Un peu plus épais pour plus de visibilité
+    backgroundColor: "#146591",
+    transform: [{ rotate: "15deg" }],
+    marginRight: 20, // On décale un peu le séparateur vers la gauche
   },
   title: {
     fontSize: 20,
@@ -156,20 +215,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: "#333",
+    color: "#146591",
     marginBottom: 15,
-  },
-  downloadButton: {
-    flexDirection: "row",
-    backgroundColor: "#007bff",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    marginLeft: 10,
   },
 });
