@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  BackHandler,
+} from "react-native";
 import usersData from "../../data/users.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TabBar from "../navDrawer/TabBar";
@@ -16,6 +23,25 @@ interface WelcomePageProps {
 export default function WelcomePage({ navigation }: WelcomePageProps) {
   const [activeTab, setActiveTab] = useState("home");
   const [currentSteps, setCurrentSteps] = useState(2500);
+
+  useEffect(() => {
+    // Fonction appelée lors de l'appui sur le bouton de retour
+    const onBackPress = () => {
+      // Tu peux ajouter ici la logique que tu souhaites exécuter
+      // Par exemple, fermer l'application :
+      BackHandler.exitApp(); // Ferme l'application
+      return true; // Empêche l'action par défaut
+    };
+
+    // Ajoute l'écouteur
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      onBackPress
+    );
+
+    // Nettoie l'écouteur
+    return () => backHandler.remove();
+  }, []); // Ajoute tes dépendances si nécessaire
 
   useEffect(() => {
     const getUserId = async () => {
