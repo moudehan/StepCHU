@@ -21,10 +21,10 @@ export const StepCounter = () => {
         }
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("You can use the activity recognition");
+        console.debug("You can use the activity recognition");
         setPermissionGranted(true);
       } else {
-        console.log("Activity recognition permission denied");
+        console.debug("Activity recognition permission denied");
       }
     } catch (err) {
       console.warn(err);
