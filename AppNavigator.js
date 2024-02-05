@@ -6,6 +6,7 @@ import LoginPage from "./components/pages/LoginPage";
 import SettingsPage from "./components/pages/SettingsPage";
 import NewsPage from "./components/pages/NewsPage";
 import ProfilPage from "./components/pages/ProfilPage";
+import ChallengesPage from "./components/pages/ChallengesPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +47,11 @@ function AppNavigator({ initialRouteName }) {
       <Stack.Screen
         name="Settings"
         component={SettingsPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ChallengesScreen"
+        component={ChallengesPage}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
