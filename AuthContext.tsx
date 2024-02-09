@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type AuthContextType = {
@@ -18,11 +24,22 @@ type AuthProviderProps = {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [userId, setUserId] = useState<string | null>(null);
 
+  useEffect(() => {
+    const loadUserId = async () => {
+      const storedUserId = await AsyncStorage.getItem("userId");
+      if (storedUserId) {
+        setUserId(storedUserId);
+      }
+    };
+
+    loadUserId();
+  }, []);
+
   const updateUserId = async (newUserId: string | null) => {
-    if (newUserId) {
-      await AsyncStorage.setItem("userId", newUserId);
-    } else {
+    if (newUserId === null) {
       await AsyncStorage.removeItem("userId");
+    } else {
+      await AsyncStorage.setItem("userId", newUserId);
     }
     setUserId(newUserId);
   };
