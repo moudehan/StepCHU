@@ -1,11 +1,42 @@
 import { useState, useEffect } from "react";
 import { PermissionsAndroid } from "react-native";
 import { Pedometer } from "expo-sensors";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { db } from "../../fireBase/FirebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { format } from "date-fns";
+import { useAuth } from "../../AuthContext";
 
 export const StepCounter = () => {
   const [isPedometerAvailable, setIsPedometerAvailable] = useState("checking");
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [currentStepCount, setCurrentStepCount] = useState(0);
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const { userId } = useAuth();
+  useEffect(() => {
+    const updateCurrentUser = async () => {
+      if (userId) {
+        if (userId !== currentUser) {
+          setCurrentUser(userId);
+        }
+      } else {
+        const storedUserId = await AsyncStorage.getItem("userId");
+        if (storedUserId !== null && storedUserId !== currentUser) {
+          setCurrentUser(storedUserId);
+        }
+      }
+    };
+
+    updateCurrentUser();
+  }, [userId, currentUser]);
 
   async function requestActivityRecognitionPermission() {
     try {
@@ -34,17 +65,47 @@ export const StepCounter = () => {
   useEffect(() => {
     requestActivityRecognitionPermission();
   }, []);
-
   useEffect(() => {
-    let subscription: { remove: any };
+    let subscription = { remove: () => {} };
+    let initialStepCount = 0;
+    let docId = "";
+
     async function subscribe() {
-      if (permissionGranted) {
+      if (permissionGranted && currentUser) {
         const isAvailable = await Pedometer.isAvailableAsync();
         setIsPedometerAvailable(String(isAvailable));
 
         if (isAvailable) {
-          subscription = Pedometer.watchStepCount((result) => {
-            setCurrentStepCount(result.steps);
+          const today = format(new Date(), "yyyy-MM-dd");
+          const stepsCollectionRef = collection(db, "steps");
+          const q = query(
+            stepsCollectionRef,
+            where("userId", "==", currentUser),
+            where("date", "==", today)
+          );
+
+          const querySnapshot = await getDocs(q);
+          if (querySnapshot.empty) {
+            const docRef = await addDoc(stepsCollectionRef, {
+              userId: currentUser,
+              date: today,
+              steps: 0,
+            });
+            docId = docRef.id;
+          } else {
+            querySnapshot.forEach((doc) => {
+              docId = doc.id;
+              initialStepCount = doc.data().steps;
+              setCurrentStepCount(initialStepCount);
+            });
+          }
+
+          subscription = Pedometer.watchStepCount(async (result) => {
+            const updatedStepCount = initialStepCount + result.steps;
+            setCurrentStepCount(updatedStepCount);
+            await updateDoc(doc(db, "steps", docId), {
+              steps: updatedStepCount,
+            });
           });
         }
       }
@@ -52,8 +113,8 @@ export const StepCounter = () => {
 
     subscribe();
 
-    return () => subscription && subscription.remove();
-  }, [permissionGranted]);
+    return () => subscription?.remove();
+  }, [permissionGranted, currentUser]);
 
   return { currentStepCount, isPedometerAvailable };
 };
