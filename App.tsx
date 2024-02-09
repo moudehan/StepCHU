@@ -5,11 +5,11 @@ import { getDoc, doc } from "firebase/firestore";
 import AppNavigator from "./AppNavigator";
 import LoadingPage from "./components/pages/LoadingPage";
 import { db } from "./fireBase/FirebaseConfig";
+import { AuthProvider } from "./AuthContext";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   useEffect(() => {
     const verifyUser = async () => {
       try {
@@ -46,12 +46,14 @@ export default function App() {
   const initialRouteName = isAuthenticated ? "home" : "/";
 
   return (
-    <NavigationContainer>
-      {loading ? (
-        <LoadingPage />
-      ) : (
-        <AppNavigator initialRouteName={initialRouteName} />
-      )}
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        {loading ? (
+          <LoadingPage />
+        ) : (
+          <AppNavigator initialRouteName={initialRouteName} />
+        )}
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
