@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons"; // Importez FontAwesome ou une autre collection d'icônes
-import Icon2 from "react-native-vector-icons/Ionicons"; // Importez FontAwesome ou une autre collection d'icônes
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon2 from "react-native-vector-icons/Ionicons";
+import { calculateCalories } from "../../utils/calculateCalories";
+import { calculerDistance } from "../../utils/calculateDistance";
+interface InfoBlocksProps {
+  currentStepCount: number;
+}
+const InfoBlocks = ({ currentStepCount }: InfoBlocksProps) => {
+  const [calories, setCalories] = useState(0);
+  const [distance, setDistance] = useState(0);
 
-const InfoBlocks = () => {
+  useEffect(() => {
+    setCalories(calculateCalories(currentStepCount));
+    setDistance(calculerDistance(currentStepCount));
+  }, [currentStepCount]);
   return (
     <View style={styles.blocksContainer}>
       <View style={styles.block}>
@@ -12,7 +23,7 @@ const InfoBlocks = () => {
         </View>
         <View style={styles.content}>
           <Icon2 name="location" size={20} color="#FFBB00" />
-          <Text style={styles.blockTitle}>2,50 KM</Text>
+          <Text style={styles.blockTitle}>{distance.toFixed(2)} KM</Text>
         </View>
       </View>
       <View style={styles.block}>
@@ -21,7 +32,7 @@ const InfoBlocks = () => {
         </View>
         <View style={styles.content}>
           <Icon name="fire" size={30} color="red" />
-          <Text style={styles.blockTitle}>500,50</Text>
+          <Text style={styles.blockTitle}>{calories.toFixed(2)}</Text>
         </View>
       </View>
     </View>
@@ -81,7 +92,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   content: {
-    flexDirection: "row", // Aligner les éléments horizontalement
+    flexDirection: "row",
     alignItems: "center",
   },
 });
