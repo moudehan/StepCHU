@@ -8,7 +8,6 @@ import {
   BackHandler,
 } from "react-native";
 import usersData from "../../data/users.json";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import TabBar from "../navDrawer/TabBar";
 import NavBar from "../navDrawer/NavBar";
 import InfoBlocks from "../blocs/InfosBlocs";
@@ -16,13 +15,14 @@ import OthersBlocs from "../blocs/OtherBlocs";
 import LinkedBlocks from "../blocs/LinkedBlocs";
 import Histogram from "../graphs/Histogram";
 import CercleProgress from "../graphs/CircularProgress";
+import { StepCounter } from "../steps/StepCounter";
 
 interface WelcomePageProps {
   navigation: any;
 }
 export default function WelcomePage({ navigation }: WelcomePageProps) {
+  const { currentStepCount } = StepCounter();
   const [activeTab, setActiveTab] = useState("home");
-  const [currentSteps, setCurrentSteps] = useState(2500);
 
   useEffect(() => {
     const onBackPress = () => {
@@ -37,18 +37,6 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
   }, []);
 
   useEffect(() => {
-    const getUserId = async () => {
-      const userId = await AsyncStorage.getItem("userId");
-      if (userId) {
-        const user = usersData.find((u: any) => u.id.toString() === userId);
-        if (user) {
-          setCurrentSteps(user.steps);
-        }
-      }
-    };
-
-    getUserId();
-
     const unsubscribe = navigation.addListener("focus", () => {
       setActiveTab("home");
     });
@@ -73,11 +61,11 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
           <View style={styles.blueContainer}></View>
           <Text style={styles.stepsTitle}>Nombre de pas aujord'hui</Text>
           <View style={styles.circleContainer}>
-            <CercleProgress currentSteps={currentSteps}></CercleProgress>
+            <CercleProgress currentSteps={currentStepCount}></CercleProgress>
           </View>
         </View>
         <View style={styles.genericBlock}>
-          <InfoBlocks></InfoBlocks>
+          <InfoBlocks currentStepCount={currentStepCount}></InfoBlocks>
         </View>
         <View style={styles.genericBlock}>
           <Text style={styles.histogramTitle}>Historique des pas :</Text>
