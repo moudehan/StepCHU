@@ -7,7 +7,6 @@ import {
   ScrollView,
   BackHandler,
 } from "react-native";
-import usersData from "../../data/users.json";
 import TabBar from "../navDrawer/TabBar";
 import NavBar from "../navDrawer/NavBar";
 import InfoBlocks from "../blocs/InfosBlocs";

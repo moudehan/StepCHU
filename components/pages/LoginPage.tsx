@@ -25,6 +25,7 @@ import { db } from "../../fireBase/FirebaseConfig";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { useAuth } from "../../AuthContext";
 
 interface LoginPageProps {
   navigation: any;
@@ -47,7 +48,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
     SecurityQuestion[]
   >([]);
   const [selectedQuestion, setSelectedQuestion] = useState("");
-
+  const { updateUserId } = useAuth();
   useEffect(() => {
     const fetchSecurityQuestions = async () => {
       const querySnapshot = await getDocs(collection(db, "questionSecuritys"));
@@ -113,11 +114,11 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       return;
     }
     setIsLoading(true);
-
     try {
       const userDocRef = doc(db, "utilisateurs", userId);
       const userDocSnap = await getDoc(userDocRef);
       if (userDocSnap.exists()) {
+        await updateUserId(userId);
         const userData = userDocSnap.data();
         if (!userData.phoneId || userData.phoneId === deviceUUID) {
           handlePostLogin(userData);
