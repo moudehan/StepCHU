@@ -15,6 +15,8 @@ import LinkedBlocks from "../blocs/LinkedBlocs";
 import Histogram from "../graphs/Histogram";
 import CercleProgress from "../graphs/CircularProgress";
 import { StepCounter } from "../steps/StepCounter";
+import LoadingPage from "./LoadingPage";
+import { useUserAlert } from "../Modals/AlertUserModal";
 
 interface WelcomePageProps {
   navigation: any;
@@ -22,6 +24,9 @@ interface WelcomePageProps {
 export default function WelcomePage({ navigation }: WelcomePageProps) {
   const { currentStepCount } = StepCounter();
   const [activeTab, setActiveTab] = useState("home");
+  const [isLoading, setIsLoading] = useState(false);
+
+  useUserAlert(navigation, setIsLoading);
 
   useEffect(() => {
     const onBackPress = () => {
@@ -43,6 +48,9 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
     return unsubscribe;
   }, [navigation]);
 
+  if (isLoading) {
+    return <LoadingPage />;
+  }
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* NavBar */}
