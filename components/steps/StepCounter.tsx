@@ -39,6 +39,14 @@ export const StepCounter = () => {
   }, [userId, currentUser]);
 
   async function requestActivityRecognitionPermission() {
+    const isPermissionGranted = await AsyncStorage.getItem(
+      "activityRecognitionPermissionGranted"
+    );
+    if (isPermissionGranted === "true") {
+      setPermissionGranted(true);
+      return;
+    }
+
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION,
@@ -53,6 +61,10 @@ export const StepCounter = () => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.debug("You can use the activity recognition");
+        await AsyncStorage.setItem(
+          "activityRecognitionPermissionGranted",
+          "true"
+        );
         setPermissionGranted(true);
       } else {
         console.debug("Activity recognition permission denied");
