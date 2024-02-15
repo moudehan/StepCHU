@@ -60,7 +60,7 @@ const StepHistorical: React.FC = () => {
 
     fetchSteps();
   }, []);
-  console.log(chartData.chartWidth);
+
   return (
     <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
       <View
