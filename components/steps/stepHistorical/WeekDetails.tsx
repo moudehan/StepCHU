@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, ScrollView, Dimensions, ActivityIndicator } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { calculerDistance } from "../../../utils/calculateDistance";
@@ -43,6 +43,7 @@ interface WeekDetailsProps {
 export const WeekDetails: React.FC<WeekDetailsProps> = ({ chartData }) => {
   const [weeksData, setWeeksData] = useState<WeekData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -80,13 +81,20 @@ export const WeekDetails: React.FC<WeekDetailsProps> = ({ chartData }) => {
 
     setWeeksData(weeksArray);
     setIsLoading(false);
+    scrollViewRef.current?.scrollToEnd({ animated: false });
   }, [chartData]);
 
   if (isLoading) {
     return <ActivityIndicator size="large" color="#146591" />;
   }
   return (
-    <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false}>
+    <ScrollView
+      ref={scrollViewRef}
+      horizontal
+      pagingEnabled
+      showsHorizontalScrollIndicator={false}
+      onLayout={() => scrollViewRef.current?.scrollToEnd({ animated: false })}
+    >
       {weeksData.map((week, index) => {
         const startDate = new Date(week.weekStart);
         startDate.setDate(startDate.getDate() + 1);
