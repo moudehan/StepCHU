@@ -30,7 +30,7 @@ export const DayDetails = ({ chartData }: DayDetailsProps) => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#146591" />
       </View>
     );
   }

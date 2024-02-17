@@ -6,6 +6,7 @@ import LoginPage from "./components/pages/LoginPage";
 import SettingsPage from "./components/pages/SettingsPage";
 import NewsPage from "./components/pages/NewsPage";
 import ProfilPage from "./components/pages/ProfilPage";
+import StatsPage from "./components/pages/StatsPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +47,11 @@ function AppNavigator({ initialRouteName }) {
       <Stack.Screen
         name="Settings"
         component={SettingsPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Stats"
+        component={StatsPage}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

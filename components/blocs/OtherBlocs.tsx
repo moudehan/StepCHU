@@ -19,6 +19,11 @@ const data = [
     image: require("../../assets/badgesLogo.png"),
     screen: "Settings",
   },
+  {
+    title: "Mes statistique",
+    image: require("../../assets/stats-chart.png"),
+    screen: "Stats",
+  },
 ];
 
 interface AboutPageProps {

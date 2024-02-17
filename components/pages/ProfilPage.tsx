@@ -5,12 +5,15 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
+  Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import usersData from "../../data/users.json";
 import LoadingPage from "./LoadingPage";
 import TabBar from "../navDrawer/TabBar";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../fireBase/FirebaseConfig";
+import { useAuth } from "../../AuthContext";
 
 interface ProfilPageProps {
   navigation: any;
@@ -25,34 +28,45 @@ interface MenuItemsProps {
 
 export default function ProfilPage({ navigation }: ProfilPageProps) {
   const [activeTab, setActiveTab] = useState("profil");
-  const [userData, setUserData] = useState({ username: "", email: "" });
+  const [userData, setUserData] = useState({ id: "", name: "" });
   const [isLoading, setIsLoading] = useState(false);
+
+  const { userId } = useAuth();
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const userId = await AsyncStorage.getItem("userId");
-      const user = usersData.find((u: any) => u.id.toString() === userId);
-      if (user) {
-        setUserData({ username: user.username, email: user.email });
+      if (userId) {
+        const userRef = doc(db, "utilisateurs", userId);
+        const docSnap = await getDoc(userRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setUserData({
+            id: docSnap.id,
+            name: data.name,
+          });
+        } else {
+          console.debug("Aucun document trouvé!");
+        }
       }
     };
 
     fetchUserData();
-
     const unsubscribe = navigation.addListener("focus", () => {
       setActiveTab("profil");
     });
 
     return unsubscribe;
-  }, [navigation]);
+  }, [userId]);
 
   const handleLogout = async () => {
     setIsLoading(true);
     await AsyncStorage.clear();
+    navigation.navigate("/");
+
     setTimeout(() => {
       setIsLoading(false);
-      navigation.navigate("/");
-    }, 2000);
+    }, 0);
   };
 
   if (isLoading) {
@@ -61,11 +75,14 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.upperSection}>
-        <Icon name="pencil" size={24} color="white" style={styles.editIcon} />
+        {/* <Icon name="stats-chart" color="white" style={styles.editIcon} /> */}
         <View style={styles.profileSection}>
-          {/* <Image  style={styles.profilePic} /> */}
-          <Text style={styles.profileName}>{userData.username}</Text>
-          <Text style={styles.profileEmail}>{userData.email}</Text>
+          <Image
+            source={require("../../assets/splash.png")}
+            style={styles.profilePic}
+          />
+          <Text style={styles.profileEmail}>name : {userData.name}</Text>
+          <Text style={styles.profileName}>ID : {userData.id}</Text>
         </View>
       </View>
 
@@ -77,7 +94,13 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
           onPress={() => navigation.navigate("Badges")}
         />
       </View>
-
+      <View style={styles.lowerSection3}>
+        <MenuItem
+          iconName="stats-chart"
+          text="Mes statistiques"
+          onPress={() => navigation.navigate("Stats")}
+        />
+      </View>
       <View style={styles.lowerSection2}>
         <MenuItem
           iconName="log-out-outline"
@@ -116,9 +139,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#146591",
     borderBottomRightRadius: 30,
     borderBottomLeftRadius: 30,
-    paddingBottom: 200,
+    paddingBottom: 290,
     alignItems: "center",
-    marginBottom: -170,
+    marginBottom: -250,
   },
   editIcon: {
     position: "absolute",
@@ -130,8 +153,8 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   profilePic: {
-    width: 48,
-    height: 48,
+    width: 78,
+    height: 78,
     borderRadius: 40,
     backgroundColor: "#ccc",
   },
@@ -152,6 +175,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
     paddingHorizontal: 24,
   },
+  lowerSection3: {
+    marginTop: 20,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    marginHorizontal: 40,
+    paddingHorizontal: 24,
+  },
   lowerSection2: {
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
@@ -159,6 +189,11 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     marginTop: 20,
     paddingHorizontal: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
   menuItem: {
     flexDirection: "row",
