@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, ScrollView, StyleSheet, ActivityIndicator } from "react-native";
 import { calculateCalories } from "../../../utils/calculateCalories";
 import { calculerDistance } from "../../../utils/calculateDistance";
@@ -18,10 +18,12 @@ interface DayDetailsProps {
 
 export const DayDetails = ({ chartData }: DayDetailsProps) => {
   const [isLoading, setIsLoading] = useState(true);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
+      scrollViewRef.current?.scrollToEnd({ animated: false });
     }, 300);
 
     return () => clearTimeout(timer);
@@ -30,7 +32,7 @@ export const DayDetails = ({ chartData }: DayDetailsProps) => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#146591" />
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
@@ -45,7 +47,13 @@ export const DayDetails = ({ chartData }: DayDetailsProps) => {
     .sort((a, b) => new Date(a.label).getTime() - new Date(b.label).getTime());
 
   return (
-    <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false}>
+    <ScrollView
+      ref={scrollViewRef}
+      horizontal
+      pagingEnabled
+      showsHorizontalScrollIndicator={false}
+      onLayout={() => scrollViewRef.current?.scrollToEnd({ animated: false })}
+    >
       {combinedData.map((data, index) => (
         <View key={index}>
           <GridStepsDetails
