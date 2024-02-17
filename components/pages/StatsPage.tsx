@@ -1,22 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  BackHandler,
-} from "react-native";
+import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
 import TabBar from "../navDrawer/TabBar";
 import NavBar from "../navDrawer/NavBar";
-import InfoBlocks from "../blocs/InfosBlocs";
-import OthersBlocs from "../blocs/OtherBlocs";
-import LinkedBlocks from "../blocs/LinkedBlocs";
-import Histogram from "../graphs/Histogram";
-import CercleProgress from "../graphs/CircularProgress";
-import { StepCounter } from "../steps/StepCounter";
-import LoadingPage from "./LoadingPage";
-import { useUserAlert } from "../Modals/AlertUserModal";
 import StepHistorical from "../steps/StepHistorical";
 
 interface StatsPageProps {
