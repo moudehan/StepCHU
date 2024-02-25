@@ -61,10 +61,12 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
 
   const handleLogout = async () => {
     setActiveTab("home");
+
     setIsLoading(true);
     await AsyncStorage.clear();
+    navigation.navigate("/");
+
     setTimeout(() => {
-      navigation.navigate("/");
       setIsLoading(false);
     }, 3000);
   };
