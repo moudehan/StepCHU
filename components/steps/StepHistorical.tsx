@@ -36,7 +36,7 @@ interface StepData {
 
 const StepHistorical: React.FC = () => {
   const { userId } = useAuth();
-  const [active, setActive] = useState<"day" | "week" | "month">("day");
+  const [active, setActive] = useState<"Jour" | "Semaine" | "Mois">("Jour");
   const [chartDataForDay, setChartDataForDay] = useState<StepData>({
     labels: [],
     datasets: [{ data: [], color: () => "" }],
@@ -103,7 +103,7 @@ const StepHistorical: React.FC = () => {
 
   const renderContent = () => {
     switch (active) {
-      case "day":
+      case "Jour":
         return (
           <>
             <DayDetails chartData={chartDataForDay} />
@@ -129,9 +129,9 @@ const StepHistorical: React.FC = () => {
             </ScrollView>
           </>
         );
-      case "week":
+      case "Semaine":
         return <WeekDetails chartData={chartDataWeekAndYear} />;
-      case "month":
+      case "Mois":
         return <MonthDetails chartData={chartDataWeekAndYear} />;
       default:
         return null;
@@ -141,7 +141,7 @@ const StepHistorical: React.FC = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
       <View style={styles.tabContainer}>
-        {["day", "week", "month"].map((item: any) => (
+        {["Jour", "Semaine", "Mois"].map((item: any) => (
           <TouchableOpacity
             key={item}
             onPress={() => setActive(item)}
