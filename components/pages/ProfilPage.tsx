@@ -60,13 +60,13 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
   }, [userId]);
 
   const handleLogout = async () => {
+    setActiveTab("home");
     setIsLoading(true);
     await AsyncStorage.clear();
-    navigation.navigate("/");
-
     setTimeout(() => {
+      navigation.navigate("/");
       setIsLoading(false);
-    }, 0);
+    }, 3000);
   };
 
   if (isLoading) {
@@ -81,8 +81,10 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
             source={require("../../assets/splash.png")}
             style={styles.profilePic}
           />
-          <Text style={styles.profileEmail}>name : {userData.name}</Text>
-          <Text style={styles.profileName}>ID : {userData.id}</Text>
+          <Text style={styles.profileUserName}>
+            utilisateur : {userData.name}
+          </Text>
+          <Text style={styles.profileId}>ID : {userData.id}</Text>
         </View>
       </View>
 
@@ -158,16 +160,16 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     backgroundColor: "#ccc",
   },
-  profileName: {
+  profileId: {
+    color: "#D3D4D4",
+    fontSize: 12,
+    marginTop: 4,
+  },
+  profileUserName: {
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 8,
-  },
-  profileEmail: {
-    color: "#D3D4D4",
-    fontSize: 12,
-    marginTop: 4,
   },
   lowerSection: {
     backgroundColor: "#FFFFFF",
