@@ -20,6 +20,8 @@ import {
   getDoc,
   updateDoc,
   doc,
+  query,
+  where,
 } from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -38,6 +40,7 @@ interface SecurityQuestion {
 
 const LoginPage = ({ navigation }: LoginPageProps) => {
   const [userId, setUserId] = useState("");
+  const [userName, setUserName] = useState("");
   const [customError, setCustomError] = useState("");
   const [securityQuestion, setSecurityQuestion] = useState("");
   const [securityAnswer, setSecurityAnswer] = useState("");
@@ -63,6 +66,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
 
   const resetForm = () => {
     setUserId("");
+    setUserName("");
     setCustomError("");
     setSecurityQuestion("");
     setSecurityAnswer("");
@@ -72,6 +76,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
   useFocusEffect(
     React.useCallback(() => {
       setUserId("");
+      setUserName("");
       setCustomError("");
       setSecurityQuestion("");
       setSecurityAnswer("");
@@ -109,28 +114,39 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
 
   const handleLogin = async () => {
     setCustomError("");
-    if (!userId) {
-      setCustomError("Veuillez entrer un ID utilisateur.");
+    if (!userName) {
+      setCustomError("Veuillez entrer votre Nom d'utilisateur.");
       return;
     }
     setIsLoading(true);
     try {
-      const userDocRef = doc(db, "utilisateurs", userId);
-      const userDocSnap = await getDoc(userDocRef);
-      if (userDocSnap.exists()) {
-        await updateUserId(userId);
-        const userData = userDocSnap.data();
-        if (!userData.phoneId || userData.phoneId === deviceUUID) {
-          handlePostLogin(userData);
+      const usersRef = collection(db, "utilisateurs");
+      const q = query(usersRef, where("name", "==", userName));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        const userId = userDoc.id;
+        setUserId(userId);
+        const userDocRef = doc(db, "utilisateurs", userId);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          await updateUserId(userId);
+          const userData = userDocSnap.data();
+          if (!userData.phoneId || userData.phoneId === deviceUUID) {
+            handlePostLogin(userData);
+          } else {
+            setSecurityQuestion(userData.securityQuestion);
+            setIsUserDataLoaded(true);
+          }
         } else {
-          setSecurityQuestion(userData.securityQuestion);
-          setIsUserDataLoaded(true);
+          setCustomError("Utilisateur non trouvé.");
         }
       } else {
-        setCustomError("Utilisateur non trouvé");
+        setCustomError("Utilisateur non trouvé.");
       }
     } catch (error) {
       setCustomError("Erreur lors de la connexion. Veuillez réessayer.");
+      console.error("Erreur lors de la connexion :", error);
     }
     setIsLoading(false);
   };
@@ -191,8 +207,8 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
           <AntDesign name="user" size={24} color="#B0E0E6" />
           <TextInput
             style={styles.input}
-            onChangeText={setUserId}
-            value={userId}
+            onChangeText={setUserName}
+            value={userName}
             placeholder="Entrez votre ID"
             placeholderTextColor="#B0E0E6"
             editable={!isUserDataLoaded}
