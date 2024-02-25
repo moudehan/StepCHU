@@ -108,24 +108,27 @@ const StepHistorical: React.FC = () => {
           <>
             <DayDetails chartData={chartDataForDay} />
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {chartDataForDay.chartWidth && (
-                <BarChart
-                  style={{
-                    marginVertical: 32,
-                    marginRight: 10,
-                    borderRadius: 16,
-                  }}
-                  data={chartDataForDay}
-                  width={chartDataForDay.chartWidth}
-                  height={220}
-                  yAxisSuffix=""
-                  yAxisLabel=""
-                  showValuesOnTopOfBars={true}
-                  chartConfig={chartConfig}
-                  verticalLabelRotation={0}
-                  fromZero
-                />
-              )}
+              {chartDataForDay.chartWidth &&
+                (chartDataForDay.labels.length > 1 ? (
+                  <BarChart
+                    style={{
+                      marginVertical: 32,
+                      marginRight: 10,
+                      borderRadius: 16,
+                    }}
+                    data={chartDataForDay}
+                    width={chartDataForDay.chartWidth}
+                    height={220}
+                    yAxisSuffix=""
+                    yAxisLabel=""
+                    showValuesOnTopOfBars={true}
+                    chartConfig={chartConfig}
+                    verticalLabelRotation={0}
+                    fromZero
+                  />
+                ) : (
+                  <Text> Vous n'avez pas effectué de pas récemment</Text>
+                ))}
             </ScrollView>
           </>
         );
