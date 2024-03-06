@@ -25,7 +25,7 @@ const Histogram = () => {
 
       const stepsQuery = query(
         collection(db, "steps"),
-        where("userId", "==", userId)
+        where("user.userId", "==", userId)
       );
 
       try {
@@ -89,13 +89,14 @@ const Histogram = () => {
       marginRight: 20,
     },
   });
-
+  const chartWidth =
+    labels.length < 7 ? labels.length * 80 : labels.length * 60;
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       <View style={styles.chartContainer}>
         <BarChart
           data={data}
-          width={labels.length * 65}
+          width={chartWidth}
           height={220}
           chartConfig={chartConfig}
           yAxisLabel=""
