@@ -51,7 +51,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
     SecurityQuestion[]
   >([]);
   const [selectedQuestion, setSelectedQuestion] = useState("");
-  const { updateUserId } = useAuth();
+  const { updateUserId, updateUserDetails } = useAuth();
   useEffect(() => {
     const fetchSecurityQuestions = async () => {
       const querySnapshot = await getDocs(collection(db, "questionSecuritys"));
@@ -131,6 +131,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
           await updateUserId(userId);
+          await updateUserDetails(userDocSnap.data() as UserType, userId);
           const userData = userDocSnap.data();
           if (!userData.phoneId || userData.phoneId === deviceUUID) {
             handlePostLogin(userData);

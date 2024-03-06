@@ -10,11 +10,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 type AuthContextType = {
   userId: string | null;
   updateUserId: (newUserId: string | null) => Promise<void>;
+  userDetails: UserType | null;
+  updateUserDetails: (
+    newUser: UserType,
+    newUserId: string | null
+  ) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
   userId: null,
   updateUserId: async () => {},
+  userDetails: null,
+  updateUserDetails: async () => {},
 });
 
 type AuthProviderProps = {
@@ -23,12 +30,18 @@ type AuthProviderProps = {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [userId, setUserId] = useState<string | null>(null);
+  const [userDetails, setUserDetails] = useState<UserType | null>(null);
 
   useEffect(() => {
     const loadUserId = async () => {
       const storedUserId = await AsyncStorage.getItem("userId");
+      const storedUserJson = await AsyncStorage.getItem("user");
       if (storedUserId) {
         setUserId(storedUserId);
+      }
+      if (storedUserJson) {
+        const storedUser: UserType = JSON.parse(storedUserJson);
+        setUserDetails(storedUser);
       }
     };
 
@@ -43,9 +56,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
     setUserId(newUserId);
   };
-
+  const updateUserDetails = async (
+    newUser: UserType,
+    newUserId: string | null
+  ) => {
+    if (newUserId === null) {
+      await AsyncStorage.removeItem("user");
+    } else {
+      await AsyncStorage.setItem("user", JSON.stringify(newUser));
+    }
+    setUserDetails(newUser);
+  };
   return (
-    <AuthContext.Provider value={{ userId, updateUserId }}>
+    <AuthContext.Provider
+      value={{ userId, userDetails, updateUserId, updateUserDetails }}
+    >
       {children}
     </AuthContext.Provider>
   );
