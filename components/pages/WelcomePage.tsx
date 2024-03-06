@@ -74,14 +74,14 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
         <View style={styles.genericBlock}>
           <InfoBlocks currentStepCount={currentStepCount}></InfoBlocks>
         </View>
+        <View style={{ ...styles.genericBlock, marginTop: 40 }}>
+          <OthersBlocs navigation={navigation}></OthersBlocs>
+        </View>
         <View style={styles.genericBlock}>
           <Text style={styles.histogramTitle}>Historique des pas :</Text>
         </View>
         <View style={styles.genericBlockHistogram}>
           <Histogram></Histogram>
-        </View>
-        <View style={styles.genericBlock}>
-          <OthersBlocs navigation={navigation}></OthersBlocs>
         </View>
         <View style={styles.linkedBlocksWrapper}>
           <View style={styles.blueContainer1} />
