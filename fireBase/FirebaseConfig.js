@@ -1,5 +1,7 @@
 import { getFirestore } from "@firebase/firestore";
 import { initializeApp } from "firebase/app";
+import messaging from '@react-native-firebase/messaging';
+
 const firebaseConfig = {
   apiKey: "AIzaSyBRPrKkC46xusJRSuOI4QyiFI8y50a4Q8g",
   authDomain: "stepchu-db916.firebaseapp.com",
@@ -12,5 +14,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Received a notification while the app is in the background:', remoteMessage);
+  // You can customize how to handle the notification here
+});
 
 export { db };
