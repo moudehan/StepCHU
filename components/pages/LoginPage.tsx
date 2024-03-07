@@ -28,6 +28,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useAuth } from "../../AuthContext";
+import { JSHash, CONSTANTS } from "react-native-hash";
 
 interface LoginPageProps {
   navigation: any;
@@ -100,10 +101,14 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
   const handleSecurityQuestionUpdate = async () => {
     if (selectedQuestion && securityAnswer && userId) {
       const userDocRef = doc(db, "utilisateurs", userId);
+      const hashedAnswer = await JSHash(
+        securityAnswer,
+        CONSTANTS.HashAlgorithms.sha256
+      );
       try {
         await updateDoc(userDocRef, {
           securityQuestion: selectedQuestion,
-          securityAnswer: securityAnswer,
+          securityAnswer: hashedAnswer,
         });
         navigation.navigate("home");
       } catch (error) {
@@ -178,8 +183,12 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       }
 
       const userData = userDocSnap.data();
+      const hashedAnswerInput = await JSHash(
+        securityAnswer,
+        CONSTANTS.HashAlgorithms.sha256
+      );
 
-      if (securityAnswer === userData.securityAnswer) {
+      if (hashedAnswerInput === userData.securityAnswer) {
         await updateDoc(userDocRef, { phoneId: deviceUUID });
         await AsyncStorage.setItem("userId", userId);
         await AsyncStorage.setItem("phoneId", deviceUUID);
