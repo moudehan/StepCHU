@@ -58,7 +58,7 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
       {/* TabBar */}
       <TabBar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={() => setActiveTab}
         navigation={navigation}
       />
     </SafeAreaView>
