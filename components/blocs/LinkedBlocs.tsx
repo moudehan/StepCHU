@@ -1,4 +1,3 @@
-import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -8,7 +7,6 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { db } from "../../fireBase/FirebaseConfig";
 import { fetchNewsletters } from "../services/NewsLetterService";
 
 interface AboutPageProps {
