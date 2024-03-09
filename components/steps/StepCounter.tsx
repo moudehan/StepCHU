@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { PermissionsAndroid } from "react-native";
+import { Platform, PermissionsAndroid } from "react-native";
 import { Pedometer } from "expo-sensors";
 import {
   addDoc,
@@ -71,26 +71,40 @@ export const StepCounter = () => {
     }
 
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION,
-        {
-          title: "Permission de Reconnaissance d'Activité",
-          message:
-            "Cette application a besoin d'accéder à votre reconnaissance d'activité pour compter vos pas.",
-          buttonNeutral: "Demander Plus Tard",
-          buttonNegative: "Annuler",
-          buttonPositive: "OK",
-        }
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.debug("You can use the activity recognition");
-        await AsyncStorage.setItem(
-          "activityRecognitionPermissionGranted",
-          "true"
+      if (Platform.OS === "android") {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION,
+          {
+            title: "Permission de Reconnaissance d'Activité",
+            message:
+              "Cette application a besoin d'accéder à votre reconnaissance d'activité pour compter vos pas.",
+            buttonNeutral: "Demander Plus Tard",
+            buttonNegative: "Annuler",
+            buttonPositive: "OK",
+          }
         );
-        setPermissionGranted(true);
-      } else {
-        console.debug("Activity recognition permission denied");
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.debug("You can use the activity recognition");
+          await AsyncStorage.setItem(
+            "activityRecognitionPermissionGranted",
+            "true"
+          );
+          setPermissionGranted(true);
+        } else {
+          console.debug("Activity recognition permission denied");
+        }
+      } else if (Platform.OS === "ios") {
+        const isPermissionGranted = await Pedometer.requestPermissionsAsync();
+        if (isPermissionGranted) {
+          console.debug("You can use the activity recognition");
+          await AsyncStorage.setItem(
+            "activityRecognitionPermissionGranted",
+            "true"
+          );
+          setPermissionGranted(true);
+        } else {
+          console.debug("Activity recognition permission denied");
+        }
       }
     } catch (err) {
       console.warn(err);
@@ -100,6 +114,7 @@ export const StepCounter = () => {
   useEffect(() => {
     requestActivityRecognitionPermission();
   }, []);
+  
   useEffect(() => {
     let subscription = { remove: () => {} };
     let initialStepCount = 0;
