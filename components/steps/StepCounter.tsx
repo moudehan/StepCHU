@@ -17,26 +17,48 @@ import { useAuth } from "../../AuthContext";
 
 export const StepCounter = () => {
   const [isPedometerAvailable, setIsPedometerAvailable] = useState("checking");
-  const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [currentStepCount, setCurrentStepCount] = useState(0);
   const [permissionGranted, setPermissionGranted] = useState(false);
-  const { userId } = useAuth();
+  const [isCreatingDoc, setIsCreatingDoc] = useState(false);
+  const { authState } = useAuth();
+
   useEffect(() => {
     const updateCurrentUser = async () => {
-      if (userId) {
-        if (userId !== currentUser) {
-          setCurrentUser(userId);
+      if (authState.userId) {
+        if (authState.userId !== currentUserId) {
+          setCurrentUserId(authState.userId);
         }
       } else {
         const storedUserId = await AsyncStorage.getItem("userId");
-        if (storedUserId !== null && storedUserId !== currentUser) {
-          setCurrentUser(storedUserId);
+        if (storedUserId !== null && storedUserId !== currentUserId) {
+          setCurrentUserId(storedUserId);
         }
       }
     };
 
     updateCurrentUser();
-  }, [userId, currentUser]);
+  }, [authState.userId, currentUserId]);
+
+  useEffect(() => {
+    const updateCurrentUserObject = async () => {
+      if (authState.userDetails) {
+        if (authState.userDetails !== currentUser) {
+          setCurrentUser(authState.userDetails);
+        }
+      } else {
+        const storedUserJson = await AsyncStorage.getItem("user");
+
+        if (storedUserJson !== null && storedUserJson !== currentUserId) {
+          const storedUser: UserType = JSON.parse(storedUserJson);
+          setCurrentUser(storedUser);
+        }
+      }
+    };
+
+    updateCurrentUserObject();
+  }, [authState.userDetails, currentUser]);
 
   async function requestActivityRecognitionPermission() {
     const isPermissionGranted = await AsyncStorage.getItem(
@@ -83,7 +105,7 @@ export const StepCounter = () => {
     let docId = "";
 
     async function subscribe() {
-      if (permissionGranted && currentUser) {
+      if (permissionGranted && currentUserId && currentUser) {
         const isAvailable = await Pedometer.isAvailableAsync();
         setIsPedometerAvailable(String(isAvailable));
 
@@ -92,17 +114,22 @@ export const StepCounter = () => {
           const stepsCollectionRef = collection(db, "steps");
           const q = query(
             stepsCollectionRef,
-            where("userId", "==", currentUser),
+            where("user.userId", "==", currentUserId),
+            where("user.name", "==", currentUser.name),
             where("date", "==", today)
           );
-
           const querySnapshot = await getDocs(q);
-          if (querySnapshot.empty) {
+          if (querySnapshot.empty && !isCreatingDoc) {
+            setIsCreatingDoc(true);
             const docRef = await addDoc(stepsCollectionRef, {
-              userId: currentUser,
+              user: {
+                ...currentUser,
+                userId: currentUserId,
+              },
               date: today,
               steps: 0,
             });
+            setIsCreatingDoc(false);
             docId = docRef.id;
           } else {
             querySnapshot.forEach((doc) => {
@@ -115,18 +142,18 @@ export const StepCounter = () => {
           subscription = Pedometer.watchStepCount(async (result) => {
             const updatedStepCount = initialStepCount + result.steps;
             setCurrentStepCount(updatedStepCount);
-            await updateDoc(doc(db, "steps", docId), {
-              steps: updatedStepCount,
-            });
+            if (docId) {
+              await updateDoc(doc(db, "steps", docId), {
+                steps: updatedStepCount,
+              });
+            }
           });
         }
       }
     }
-
     subscribe();
-
     return () => subscription?.remove();
-  }, [permissionGranted, currentUser]);
+  }, [permissionGranted, currentUserId, currentUser]);
 
   return { currentStepCount, isPedometerAvailable };
 };
