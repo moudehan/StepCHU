@@ -45,6 +45,15 @@ export const WeekDetails: React.FC<WeekDetailsProps> = ({ chartData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  const getStartOfWeek = (date: Date) => {
+    const resultDate = new Date(date);
+    const day = resultDate.getDay();
+    const diff = resultDate.getDate() - day + (day === 0 ? -6 : 1);
+    resultDate.setDate(diff);
+    resultDate.setHours(0, 0, 0, 0);
+    return resultDate;
+  };
+
   useEffect(() => {
     setIsLoading(true);
 
@@ -54,34 +63,37 @@ export const WeekDetails: React.FC<WeekDetailsProps> = ({ chartData }) => {
 
     chartData.labels.forEach((label, index) => {
       const date = new Date(label);
-      const startOfWeek = getStartOfWeek(date).toISOString().slice(0, 10);
+      const startOfWeek = getStartOfWeek(date);
+      const weekStartKey = startOfWeek.toISOString().slice(0, 10); // Utilisez la date de début de semaine comme clé
       const dayOfWeek = date.getDay() || 7;
 
-      if (!dataByWeek[startOfWeek]) {
-        dataByWeek[startOfWeek] = {
+      if (!dataByWeek[weekStartKey]) {
+        dataByWeek[weekStartKey] = {
           labels: Array(7).fill(""),
           steps: Array(7).fill(0),
         };
       }
 
-      dataByWeek[startOfWeek].steps[dayOfWeek - 1] =
+      // Assurez-vous d'ajouter les données au bon indice basé sur le jour de la semaine
+      dataByWeek[weekStartKey].steps[dayOfWeek - 1] +=
         chartData.datasets[0].data[index];
-      dataByWeek[startOfWeek].labels[dayOfWeek - 1] = `${date.getDate()}`;
+      dataByWeek[weekStartKey].labels[dayOfWeek - 1] = `${date.getDate()}`;
     });
 
-    const weeksArray = Object.entries(dataByWeek).map(([weekStart, data]) => {
-      const totalSteps = data.steps.reduce((acc, current) => acc + current, 0);
-      return {
+    const weeksArray = Object.entries(dataByWeek)
+      .map(([weekStart, data]) => ({
         weekStart,
         labels: data.labels,
         steps: data.steps,
-        totalSteps,
-      };
-    });
+        totalSteps: data.steps.reduce((acc, current) => acc + current, 0),
+      }))
+      .sort(
+        (a, b) =>
+          new Date(a.weekStart).getTime() - new Date(b.weekStart).getTime()
+      );
 
     setWeeksData(weeksArray);
     setIsLoading(false);
-    scrollViewRef.current?.scrollToEnd({ animated: false });
   }, [chartData]);
 
   if (isLoading) {
