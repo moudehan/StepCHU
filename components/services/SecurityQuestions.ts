@@ -1,4 +1,3 @@
-// SecurityQuestionService.ts
 import { db } from "../../fireBase/FirebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { SecurityQuestion } from "../../types/SecurityQuestionTypes";

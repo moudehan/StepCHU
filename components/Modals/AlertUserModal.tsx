@@ -5,13 +5,13 @@ import { doc, onSnapshot, getFirestore } from "firebase/firestore";
 import { useAuth } from "../../AuthContext";
 
 export const useUserAlert = (navigation: any, setIsLoading: any) => {
-  const { userId } = useAuth();
+  const { authState } = useAuth();
 
   useEffect(() => {
-    if (!userId) return;
+    if (!authState.userId) return;
 
     const db = getFirestore();
-    const userDocRef = doc(db, "utilisateurs", userId);
+    const userDocRef = doc(db, "utilisateurs", authState.userId);
 
     const unsubscribe = onSnapshot(
       userDocRef,
@@ -41,5 +41,5 @@ export const useUserAlert = (navigation: any, setIsLoading: any) => {
     );
 
     return () => unsubscribe();
-  }, [userId, navigation, setIsLoading]);
+  }, [authState.userId, navigation, setIsLoading]);
 };
