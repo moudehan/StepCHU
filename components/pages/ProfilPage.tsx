@@ -31,12 +31,12 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
   const [userData, setUserData] = useState({ id: "", name: "" });
   const [isLoading, setIsLoading] = useState(false);
 
-  const { userId } = useAuth();
+  const { authState } = useAuth();
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (userId) {
-        const userRef = doc(db, "utilisateurs", userId);
+      if (authState.userId) {
+        const userRef = doc(db, "utilisateurs", authState.userId);
         const docSnap = await getDoc(userRef);
 
         if (docSnap.exists()) {
@@ -57,15 +57,13 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
     });
 
     return unsubscribe;
-  }, [userId]);
+  }, [authState.userId]);
 
   const handleLogout = async () => {
     setActiveTab("home");
-
     setIsLoading(true);
     await AsyncStorage.clear();
     navigation.navigate("/");
-
     setTimeout(() => {
       setIsLoading(false);
     }, 3000);
