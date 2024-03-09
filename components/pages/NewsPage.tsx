@@ -8,30 +8,23 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
-import { collection, getDocs } from "firebase/firestore";
 import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
-import { db } from "../../fireBase/FirebaseConfig";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import NewsletterModal from "../Modals/NewsletterModal";
+import { fetchNewsletters } from "../services/NewsLetterService";
+import { NewsletterType } from "../../types/NewsletterTypes";
 
 interface NewsPageProps {
   navigation: any;
   route?: any;
 }
 
-interface Newsletter {
-  id: string;
-  description: string;
-  name: string;
-  pdfUrl: string;
-}
-
 export default function NewsPage({ navigation, route }: NewsPageProps) {
-  const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
+  const [newsletters, setNewsletters] = useState<NewsletterType[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedNewsletter, setSelectedNewsletter] =
-    useState<Newsletter | null>(null);
+    useState<NewsletterType | null>(null);
 
   useEffect(() => {
     if (route?.params?.id) {
@@ -48,20 +41,12 @@ export default function NewsPage({ navigation, route }: NewsPageProps) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {});
-    const fetchNewsletters = async () => {
-      const querySnapshot = await getDocs(collection(db, "newsletters"));
-      const newslettersData = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          description: data.description,
-          name: data.name,
-          pdfUrl: data.pdfUrl,
-        };
-      });
+    const loadData = async () => {
+      const newslettersData = await fetchNewsletters();
       setNewsletters(newslettersData);
     };
-    fetchNewsletters();
+
+    loadData();
     return unsubscribe;
   }, [navigation]);
 

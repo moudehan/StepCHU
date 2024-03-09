@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { db } from "../../fireBase/FirebaseConfig";
+import { fetchNewsletters } from "../services/NewsLetterService";
 
 interface AboutPageProps {
   navigation: any;
@@ -23,20 +24,12 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
 
   useEffect(() => {
-    const fetchNewsletters = async () => {
-      const querySnapshot = await getDocs(collection(db, "newsletters"));
-      const newslettersData = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          description: data.description,
-          name: data.name,
-          pdfUrl: data.pdfUrl,
-        };
-      });
+    const loadData = async () => {
+      const newslettersData = await fetchNewsletters();
       setNewsletters(newslettersData);
     };
-    fetchNewsletters();
+
+    loadData();
   }, []);
 
   const handlePress = (newsletterId: string) => {
