@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserType } from "./types/UserType";
 
 type AuthState = {
   userId: string | null;

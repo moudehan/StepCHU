@@ -15,13 +15,6 @@ const chartConfig = {
   barPercentage: 0.5,
 };
 
-const getStartOfWeek = (date: Date) => {
-  const resultDate = new Date(date);
-  const day = date.getDay() || 7;
-  if (day !== 1) resultDate.setHours(-24 * (day - 1));
-  return resultDate;
-};
-
 interface StepData {
   labels: string[];
   datasets: {
