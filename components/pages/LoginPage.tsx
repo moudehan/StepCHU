@@ -52,7 +52,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
     SecurityQuestion[]
   >([]);
   const [selectedQuestion, setSelectedQuestion] = useState("");
-  const { updateUserId, updateUserDetails } = useAuth();
+  const { setAuthState } = useAuth();
   useEffect(() => {
     const fetchSecurityQuestions = async () => {
       const querySnapshot = await getDocs(collection(db, "questionSecuritys"));
@@ -135,8 +135,10 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
         const userDocRef = doc(db, "utilisateurs", userId);
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
-          await updateUserId(userId);
-          await updateUserDetails(userDocSnap.data() as UserType, userId);
+          await setAuthState({
+            userId: userId,
+            userDetails: userDocSnap.data() as UserType,
+          });
           const userData = userDocSnap.data();
           if (!userData.phoneId || userData.phoneId === deviceUUID) {
             handlePostLogin(userData);
@@ -191,6 +193,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       if (hashedAnswerInput === userData.securityAnswer) {
         await updateDoc(userDocRef, { phoneId: deviceUUID });
         await AsyncStorage.setItem("userId", userId);
+        await AsyncStorage.setItem("user", JSON.stringify(userData));
         await AsyncStorage.setItem("phoneId", deviceUUID);
         navigation.navigate("home");
       } else {

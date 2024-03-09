@@ -35,7 +35,7 @@ interface StepData {
 }
 
 const StepHistorical: React.FC = () => {
-  const { userId } = useAuth();
+  const { authState } = useAuth();
   const [active, setActive] = useState<"Jour" | "Semaine" | "Mois">("Jour");
   const [chartDataForDay, setChartDataForDay] = useState<StepData>({
     labels: [],
@@ -50,7 +50,7 @@ const StepHistorical: React.FC = () => {
     const fetchSteps = async () => {
       const stepsQuery = query(
         collection(db, "steps"),
-        where("user.userId", "==", userId)
+        where("user.userId", "==", authState.userId)
       );
       const querySnapshot = await getDocs(stepsQuery);
       let stepsData: number[] = [];
@@ -94,12 +94,12 @@ const StepHistorical: React.FC = () => {
             color: (opacity = 1) => `rgba(20, 101, 145, ${opacity})`,
           },
         ],
-        chartWidth: labels.length < 7 ? labels.length * 80 : labels.length * 60,
+        chartWidth: labels.length < 4 ? labels.length * 80 : labels.length * 60,
       });
     };
 
     fetchSteps();
-  }, [userId]);
+  }, [authState.userId]);
 
   const renderContent = () => {
     switch (active) {
