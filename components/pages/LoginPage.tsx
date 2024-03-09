@@ -29,14 +29,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useAuth } from "../../AuthContext";
 import { JSHash, CONSTANTS } from "react-native-hash";
+import { fetchSecurityQuestions } from "../services/SecurityQuestions";
+import { SecurityQuestion } from "../../types/SecurityQuestionTypes";
+import { UserType } from "../../types/UserType";
 
 interface LoginPageProps {
   navigation: any;
-}
-
-interface SecurityQuestion {
-  id: string;
-  [key: string]: any;
 }
 
 const LoginPage = ({ navigation }: LoginPageProps) => {
@@ -53,16 +51,13 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
   >([]);
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const { setAuthState } = useAuth();
+
   useEffect(() => {
-    const fetchSecurityQuestions = async () => {
-      const querySnapshot = await getDocs(collection(db, "questionSecuritys"));
-      const questions = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+    const loadSecurityQuestions = async () => {
+      const questions = await fetchSecurityQuestions();
       setSecurityQuestions(questions);
     };
-    fetchSecurityQuestions();
+    loadSecurityQuestions();
   }, []);
 
   const resetForm = () => {
@@ -237,7 +232,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
               <SelectList
                 setSelected={(val: any) => setSelectedQuestion(val)}
                 data={securityQuestions.map((question) => ({
-                  key: question.value,
+                  key: question.id,
                   value: question.name,
                 }))}
                 save="value"

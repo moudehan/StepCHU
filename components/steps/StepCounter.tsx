@@ -14,6 +14,7 @@ import { db } from "../../fireBase/FirebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { format } from "date-fns";
 import { useAuth } from "../../AuthContext";
+import { UserType } from "../../types/UserType";
 
 export const StepCounter = () => {
   const [isPedometerAvailable, setIsPedometerAvailable] = useState("checking");
