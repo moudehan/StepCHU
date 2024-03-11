@@ -41,6 +41,13 @@ export const StepCounter = () => {
 
     updateCurrentUser();
   }, [authState.userId, currentUserId]);
+  const updateStepCount = async (steps: any) => {
+    try {
+      await AsyncStorage.setItem("latestStepCount", String(steps));
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   useEffect(() => {
     const updateCurrentUserObject = async () => {
@@ -114,7 +121,7 @@ export const StepCounter = () => {
   useEffect(() => {
     requestActivityRecognitionPermission();
   }, []);
-  
+
   useEffect(() => {
     let subscription = { remove: () => {} };
     let initialStepCount = 0;
@@ -158,6 +165,7 @@ export const StepCounter = () => {
           subscription = Pedometer.watchStepCount(async (result) => {
             const updatedStepCount = initialStepCount + result.steps;
             setCurrentStepCount(updatedStepCount);
+            updateStepCount(updatedStepCount); // Enregistrement des pas dans AsyncStorage
             if (docId) {
               await updateDoc(doc(db, "steps", docId), {
                 steps: updatedStepCount,

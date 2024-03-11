@@ -17,6 +17,7 @@ import CercleProgress from "../graphs/CircularProgress";
 import { StepCounter } from "../steps/StepCounter";
 import LoadingPage from "./LoadingPage";
 import { useUserAlert } from "../Modals/AlertUserModal";
+import useBackgroundNotification from "../notificaton/stepCounterNotif";
 
 interface WelcomePageProps {
   navigation: any;
@@ -25,6 +26,7 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
   const { currentStepCount } = StepCounter();
   const [activeTab, setActiveTab] = useState("home");
   const [isLoading, setIsLoading] = useState(false);
+  useBackgroundNotification();
 
   useUserAlert(navigation, setIsLoading);
 
@@ -66,7 +68,7 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
       >
         <View style={styles.genericBlock}>
           <View style={styles.blueContainer}></View>
-          <Text style={styles.stepsTitle}>Nombre de pas aujord'hui</Text>
+          <Text style={styles.stepsTitle}>Nombre de pas aujourd'hui</Text>
           <View style={styles.circleContainer}>
             <CercleProgress currentSteps={currentStepCount}></CercleProgress>
           </View>
