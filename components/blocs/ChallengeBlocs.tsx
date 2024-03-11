@@ -27,7 +27,7 @@ export default function ChallengeBlocs({
   end,
 }: ChallengeBlocsProps) {
   const { authState } = useAuth();
-  const [stepsData, setStepsData] = useState([]);
+  const [stepsData, setStepsData] = useState(0);
   const [today, setToday] = useState(new Date());
   const months = [
     "Janvier",
@@ -46,6 +46,7 @@ export default function ChallengeBlocs({
 
   useEffect(() => {
     const fetchSteps = async () => {
+      let steps: number = 0;
       const stepsQuery = query(
         collection(db, "steps"),
         where("user.userId", "==", authState.userId)
@@ -53,7 +54,17 @@ export default function ChallengeBlocs({
       const querySnapshot = await getDocs(stepsQuery);
       querySnapshot.forEach((doc) => {
         const data = doc.data();
+        const date = new Date(data.date);
+        console.log(data, date);
+        if (
+          date.getTime() < start.toDate().getTime() &&
+          date.getTime() > end.toDate().getTime()
+        ) {
+          console.log(date.getTime());
+          steps += data.steps;
+        }
       });
+      setStepsData(steps);
     };
 
     fetchSteps();
@@ -73,8 +84,10 @@ export default function ChallengeBlocs({
         </Text>
       </View>
 
+      <Text>{stepsData}</Text>
+
       {start.toDate() < today && end.toDate() > today ? (
-        <Progress.Bar progress={0.5} width={null} height={10} />
+        <Progress.Bar progress={0.5} width={null} height={10} color="#E26C61" />
       ) : (
         <Text style={Styles.soonText}>Le challenge démarre bientôt !</Text>
       )}
@@ -97,5 +110,7 @@ const Styles = StyleSheet.create({
   },
   soonText: {
     textAlign: "center",
-  }
+    fontWeight: "bold",
+    padding: 10,
+  },
 });
