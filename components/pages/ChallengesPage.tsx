@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet, Text } from "react-native";
 import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import ChallengeBlocs from "../blocs/ChallengeBlocs";
 import ChallengeLineSeparator from "../separator/ChallengeLineSeparator";
@@ -22,7 +22,7 @@ interface Challenges {
   start: string;
   end: string;
   quantity: number;
-  type: EventTypes
+  type: string;
 }
 
 export default function ChallengesPage({ navigation }: ChallengesPageProps) {
@@ -33,18 +33,21 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
     const unsubscribe = navigation.addListener("focus", () => { });
     const fetchChallenges = async () => {
       const querySnapshot = await getDocs(collection(db, "events"));
-      const challengesData = querySnapshot.docs.map((doc) => {
+      const challengesData = querySnapshot.docs.map(async (doc) => {
         const data = doc.data();
+        const typeDoc = await getDoc(data.type);
+        const typeData = typeDoc.data() as EventTypes;
         return {
           id: doc.id,
           title: data.title,
           start: data.start,
           end: data.end,
           quantity: data.quantity,
-          type: data.type
+          type: typeData.name
         };
       });
-      setChallenges(challengesData);
+      const resolvedChallenges = await Promise.all(challengesData);
+      setChallenges(resolvedChallenges);
     };
     fetchChallenges();
     return unsubscribe;
@@ -63,7 +66,7 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
       <FlatList
         data={challenges}
         extraData={challenges}
-        renderItem={({ item }) => <ChallengeBlocs title={item.title} />}
+        renderItem={({ item }) => <ChallengeBlocs title={item.title} quantity={item.quantity} type={item.type} />}
         ItemSeparatorComponent={ChallengeLineSeparator}/>
 
       {/* TabBar */}
