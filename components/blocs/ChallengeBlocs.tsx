@@ -28,6 +28,7 @@ export default function ChallengeBlocs({
 }: ChallengeBlocsProps) {
   const { authState } = useAuth();
   const [stepsData, setStepsData] = useState([]);
+  const [today, setToday] = useState(new Date());
   const months = [
     "Janvier",
     "Février",
@@ -63,15 +64,20 @@ export default function ChallengeBlocs({
       <Text style={Styles.title}>{title}</Text>
       <View style={Styles.dates}>
         <Text>
-          du {start.toDate().getDay().toString().padStart(2, "0")}{" "}
+          du {start.toDate().getDate().toString().padStart(2, "0")}{" "}
           {months[start.toDate().getMonth()]} {start.toDate().getFullYear()}{" "}
         </Text>
         <Text>
-          au {end.toDate().getDay().toString().padStart(2, "0")}{" "}
+          au {end.toDate().getDate().toString().padStart(2, "0")}{" "}
           {months[end.toDate().getMonth()]} {end.toDate().getFullYear()}
         </Text>
       </View>
-      <Progress.Bar progress={0.5} width={null} height={10} />
+
+      {start.toDate() < today && end.toDate() > today ? (
+        <Progress.Bar progress={0.5} width={null} height={10} />
+      ) : (
+        <Text style={Styles.soonText}>Le challenge démarre bientôt !</Text>
+      )}
     </View>
   );
 }
@@ -89,4 +95,7 @@ const Styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
   },
+  soonText: {
+    textAlign: "center",
+  }
 });
