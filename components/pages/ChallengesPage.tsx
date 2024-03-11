@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet, Text } from "react-native";
 import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
-import { collection, getDoc, getDocs } from "firebase/firestore";
+import { Timestamp, collection, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import ChallengeBlocs from "../blocs/ChallengeBlocs";
 import ChallengeLineSeparator from "../separator/ChallengeLineSeparator";
@@ -19,8 +19,8 @@ interface EventTypes {
 interface Challenges {
   id: string;
   title: string;
-  start: string;
-  end: string;
+  start: Timestamp;
+  end: Timestamp;
   quantity: number;
   type: string;
 }
@@ -66,7 +66,7 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
       <FlatList
         data={challenges}
         extraData={challenges}
-        renderItem={({ item }) => <ChallengeBlocs title={item.title} quantity={item.quantity} type={item.type} />}
+        renderItem={({ item }) => <ChallengeBlocs title={item.title} quantity={item.quantity} type={item.type} start={item.start} end={item.end}/>}
         ItemSeparatorComponent={ChallengeLineSeparator}/>
 
       {/* TabBar */}
