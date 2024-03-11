@@ -7,6 +7,7 @@ import SettingsPage from "./components/pages/SettingsPage";
 import NewsPage from "./components/pages/NewsPage";
 import ProfilPage from "./components/pages/ProfilPage";
 import StatsPage from "./components/pages/StatsPage";
+import BadgePage from "./components/pages/BadgePage";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,11 +29,11 @@ function AppNavigator({ initialRouteName }) {
         component={ProfilPage}
         options={{ headerShown: false }}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Badges"
         component={BadgePage}
         options={{ headerShown: false }}
-      /> */}
+      />
 
       <Stack.Screen
         name="Actualites"

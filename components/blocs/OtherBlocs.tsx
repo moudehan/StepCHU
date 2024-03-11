@@ -17,7 +17,7 @@ const data = [
   {
     title: "Mes Badges",
     image: require("../../assets/badgesLogo.png"),
-    screen: "Settings",
+    screen: "Badges",
   },
   {
     title: "Mes statistique",
