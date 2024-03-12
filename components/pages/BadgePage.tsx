@@ -58,12 +58,7 @@ export default function BadgePage({ navigation }: NewsPageProps) {
   }
   //   console.log();
   updateBadgesUser();
-
-  //   console.log(badges);
-  if (badges.length > 0) console.log(badges[0].badgeColors[2].maxPoints);
-  if (badges.length > 0) console.log(badges[0].badgeColors[2].minPoints);
-  if (badges.length > 0) console.log(badges[0].points);
-
+  console.log(badges);
   return (
     <SafeAreaView style={styles.safeArea}>
       <NavBar
@@ -76,13 +71,11 @@ export default function BadgePage({ navigation }: NewsPageProps) {
         <View style={styles.gridContainer}>
           {badges.map((badge, index) => (
             <View key={index} style={[styles.gridItem]}>
-              {}
               <Image
                 source={{ uri: badge.badgeColors[2].image }}
                 height={101}
                 width={79}
               />
-
               <Text style={styles.gridTextTitle}>{badge.name}</Text>
               <View
                 style={{
