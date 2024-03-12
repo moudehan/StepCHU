@@ -63,7 +63,6 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   const [seconds, setSeconds] = useState(0);
   const [progressValue, setProgressValue] = useState(1);
   const [selectedReponse, setSelectedReponse] = useState<number>(-1);
-  const [fullTime, setFullTime] = useState(30);
 
   let dateNow = new Date();
   let partieEntiere = parseInt((quiz.questions.length / 2).toString());
@@ -73,12 +72,16 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
     dateNow.getTime() + partieEntiere * 60 * 1000 + partieDecimale * 1000
   );
 
+  const [fullTime, setFullTime] = useState(
+    Date.parse(datePlusXMinutes.toString()) - Date.now()
+  );
+
   const getTime = () => {
     const time = Date.parse(datePlusXMinutes.toString()) - Date.now();
 
     setMinutes(Math.floor((time / 1000 / 60) % 60));
     setSeconds(Math.floor((time / 1000) % 60));
-    setProgressValue(time/fullTime);
+    setProgressValue(time / fullTime);
     if (time < 0) {
       setMinutes(0);
       setSeconds(0);
@@ -88,7 +91,6 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   };
   useEffect(() => {
     const interval = setInterval(() => getTime(), 1000);
-    setFullTime(Date.parse(datePlusXMinutes.toString()) - Date.now());
     return () => clearInterval(interval);
   }, []);
 
@@ -108,13 +110,16 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
           </Text>
           <View>
             <Progress.Bar
-              progress={(progressValue)}
+              progress={progressValue}
               width={200}
               height={10}
               color="#E26C61"
             />
           </View>
-          <Text></Text>
+          <Text>
+            {Math.floor((fullTime / 1000 / 60) % 60)}:
+            {Math.floor((fullTime / 1000) % 60)}
+          </Text>
         </View>
         <Text
           style={{
