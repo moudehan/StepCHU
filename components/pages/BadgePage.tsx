@@ -26,6 +26,7 @@ import { fetchBage } from "../services/BadgesService";
 import { fetchUserByID } from "../services/UserService";
 import Badge from "../../types/Badge";
 import { set } from "date-fns";
+import BadgeColor from "../../types/BadgeColor";
 
 interface NewsPageProps {
   navigation: any;
@@ -72,6 +73,21 @@ export default function BadgePage({ navigation }: NewsPageProps) {
     }, []);
   }
 
+  function getBadgeColor(badge: Badge): BadgeColor {
+    let color = badge.badgeColors[0];
+
+    badge.badgeColors.map((badgeColor) => {
+      if (
+        badgeColor.maxPoints >= (badge.points ?? 0) &&
+        badgeColor.minPoints <= (badge.points ?? 0)
+      ) {
+        color = badgeColor;
+      }
+    });
+
+    return color;
+  }
+
   getBadgesUser();
 
   //   async function updateUserBages() {
@@ -86,8 +102,7 @@ export default function BadgePage({ navigation }: NewsPageProps) {
     // console.log("ici");
     // updateUserBages();
   }
-  //   console.log(badges);
-  //   console.log(badges);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <NavBar
@@ -101,7 +116,7 @@ export default function BadgePage({ navigation }: NewsPageProps) {
           {badges.map((badge, index) => (
             <View key={index} style={[styles.gridItem]}>
               <Image
-                source={{ uri: badge.badgeColors[2].image }}
+                source={{ uri: getBadgeColor(badge).image }}
                 height={101}
                 width={79}
               />
@@ -114,17 +129,17 @@ export default function BadgePage({ navigation }: NewsPageProps) {
                 }}
               >
                 <Text style={styles.gridTextDescription}>
-                  Marcher 10.000 pendant 7 jours d’affilés
+                  {badge.description}
                 </Text>
               </View>
               <Progress.Bar
-                progress={0.5}
+                progress={badge.points / getBadgeColor(badge).maxPoints}
                 width={79}
                 height={10}
                 color="#E26C61"
               />
               <Text style={styles.gridTextDescription}>
-                {badge.points} / {badge.badgeColors[0].maxPoints}
+                {badge.points} / {getBadgeColor(badge).maxPoints}
               </Text>
             </View>
           ))}
