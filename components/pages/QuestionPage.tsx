@@ -16,87 +16,41 @@ import * as Progress from "react-native-progress";
 import { useAuth } from "../../AuthContext";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
+import Badge from "../../types/Badge";
 
-interface NewsPageProps {
+interface QuestionPageProps {
   navigation: any;
   route?: any;
 }
 
 interface Quiz {
-  id: number;
+  id: string;
+  title: string;
+  badge: Badge;
+  description: string;
+  questions: Question[];
+}
+
+interface Question {
+  id: string;
+  text: string;
+  answers: Answer[];
+  point: Point;
+}
+
+interface Answer {
+  id: string;
+  isCorrect: boolean;
+  text: string;
+}
+
+interface Point {
+  id: string;
   name: string;
-  id_badge: number;
-  id_question_quiz: number;
+  number: number;
 }
 
-interface QuestionQuiz {
-  id: number;
-  question: string;
-  reponses: reponse[];
-}
-
-interface reponse {
-  id: number;
-  reponse: string;
-  correct: boolean;
-}
-
-const questionQuiz: QuestionQuiz[] = [
-  {
-    id: 1,
-    question: "Quel est le nom de la capitale de la France ?",
-    reponses: [
-      {
-        id: 1,
-        reponse: "Paris",
-        correct: true,
-      },
-      {
-        id: 2,
-        reponse: "Londres",
-        correct: false,
-      },
-      {
-        id: 3,
-        reponse: "Berlin",
-        correct: false,
-      },
-      {
-        id: 4,
-        reponse: "Madrid",
-        correct: false,
-      },
-    ],
-  },
-  {
-    id: 2,
-    question: "Quel est le nom de la capitale de l'Angleterre ?",
-    reponses: [
-      {
-        id: 1,
-        reponse: "Paris",
-        correct: false,
-      },
-      {
-        id: 2,
-        reponse: "Londres",
-        correct: true,
-      },
-      {
-        id: 3,
-        reponse: "Berlin",
-        correct: false,
-      },
-      {
-        id: 4,
-        reponse: "Madrid",
-        correct: false,
-      },
-    ],
-  },
-];
-
-export default function QuestionPage({ navigation, route }: NewsPageProps) {
+export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   const { quiz }: { quiz: Quiz } = route.params;
   // console.log(quiz.questions);
   // console.log(quiz.questions[0].answers[0]);
@@ -109,6 +63,7 @@ export default function QuestionPage({ navigation, route }: NewsPageProps) {
   const [seconds, setSeconds] = useState(0);
   const [progressValue, setProgressValue] = useState(1);
   const [selectedReponse, setSelectedReponse] = useState<number>(-1);
+  const [fullTime, setFullTime] = useState(30);
 
   let dateNow = new Date();
   let partieEntiere = parseInt((quiz.questions.length / 2).toString());
@@ -133,13 +88,15 @@ export default function QuestionPage({ navigation, route }: NewsPageProps) {
   };
   useEffect(() => {
     const interval = setInterval(() => getTime(), 1000);
+    setFullTime(quiz.questions.length * 30);
     return () => clearInterval(interval);
   }, []);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <NavBar
         paramIcon={false}
-        title={quiz.name}
+        title={quiz.title}
         navigation={navigation}
         paramBack={true}
       />
@@ -157,7 +114,7 @@ export default function QuestionPage({ navigation, route }: NewsPageProps) {
               color="#E26C61"
             />
           </View>
-          <Text>10:00</Text>
+          <Text>{fullTime}</Text>
         </View>
         <Text
           style={{
