@@ -53,16 +53,13 @@ export default function BadgePage({ navigation }: NewsPageProps) {
               user?.badges.map((userBadge) => {
                 if (badge.id == userBadge.id) {
                   badgeFound = true;
-                  //   tabBadge.push({ ...badge, points: userBadge.points });
-                  //   console.log("userBadge");
+                  tabBadge.push({ ...badge, points: userBadge.points });
                 }
-                // console.log("userBadge");
               });
               if (!badgeFound) {
-                // console.log("test");
+                tabBadge.push({ ...badge, points: 0 });
               }
             } else {
-              //   console.log("test");
               tabBadge.push({ ...badge, points: 0 });
             }
           });
@@ -72,6 +69,21 @@ export default function BadgePage({ navigation }: NewsPageProps) {
       fetchAllBadge();
     }, []);
   }
+
+  useEffect(() => {
+    async function updateUserBages() {
+      let tabBadge: any[] = [];
+      badges.map((badge) => {
+        tabBadge.push({ id: badge.id, points: badge.points });
+      });
+
+      const userDocRef = doc(db, "utilisateurs", userId.authState.userId!);
+      await updateDoc(userDocRef, { badges: tabBadge });
+    }
+    if (badges.length != 0) {
+      updateUserBages();
+    }
+  }, [badges]);
 
   function getBadgeColor(badge: Badge): BadgeColor {
     let color = badge.badgeColors[0];
@@ -89,19 +101,6 @@ export default function BadgePage({ navigation }: NewsPageProps) {
   }
 
   getBadgesUser();
-
-  //   async function updateUserBages() {
-  //     let updateBadge = {
-  //       badges: [{ badge: "3jqhHN2PxvNfhkL9x0d9", points: 150 }],
-  //     };
-  //     // const userDocRef = doc(db, "utilisateurs", userId.authState.userId!);
-  //     // await updateDoc(userDocRef, { badges: updateBadge.badges });
-  //   }
-
-  if (badges.length != 0) {
-    // console.log("ici");
-    // updateUserBages();
-  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
