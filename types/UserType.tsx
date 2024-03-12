@@ -7,7 +7,7 @@ export type UserType = {
   securityAnswer?: string;
   securityQuestion?: string;
   badges: {
-    badge: Badge;
+    id: String;
     points: number;
   }[];
 };

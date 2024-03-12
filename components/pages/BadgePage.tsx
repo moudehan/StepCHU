@@ -13,7 +13,14 @@ import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
 import { useAuth } from "../../AuthContext";
 import * as Progress from "react-native-progress";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import { fetchBage } from "../services/BadgesService";
 import { fetchUserByID } from "../services/UserService";
@@ -32,21 +39,29 @@ export default function BadgePage({ navigation }: NewsPageProps) {
 
   const userId = useAuth();
 
-  async function updateBadgesUser() {
+  async function getBadgesUser() {
     useEffect(() => {
       const fetchAllBadge = async () => {
         if (userId.authState.userId) {
           const user = await fetchUserByID(userId.authState.userId);
           const fetchBadges = await fetchBage();
-          let tabBadge = [];
+          let tabBadge: any[] = [];
           fetchBadges.map((badge) => {
             if (user?.badges) {
+              let badgeFound = false;
               user?.badges.map((userBadge) => {
-                if (badge.id != userBadge.badge.id) {
-                } else {
+                if (badge.id == userBadge.id) {
+                  badgeFound = true;
+                  //   tabBadge.push({ ...badge, points: userBadge.points });
+                  //   console.log("userBadge");
                 }
+                // console.log("userBadge");
               });
+              if (!badgeFound) {
+                // console.log("test");
+              }
             } else {
+              //   console.log("test");
               tabBadge.push({ ...badge, points: 0 });
             }
           });
@@ -56,9 +71,23 @@ export default function BadgePage({ navigation }: NewsPageProps) {
       fetchAllBadge();
     }, []);
   }
-  //   console.log();
-  updateBadgesUser();
-  console.log(badges);
+
+  getBadgesUser();
+
+  //   async function updateUserBages() {
+  //     let updateBadge = {
+  //       badges: [{ badge: "3jqhHN2PxvNfhkL9x0d9", points: 150 }],
+  //     };
+  //     // const userDocRef = doc(db, "utilisateurs", userId.authState.userId!);
+  //     // await updateDoc(userDocRef, { badges: updateBadge.badges });
+  //   }
+
+  if (badges.length != 0) {
+    // console.log("ici");
+    // updateUserBages();
+  }
+  //   console.log(badges);
+  //   console.log(badges);
   return (
     <SafeAreaView style={styles.safeArea}>
       <NavBar
