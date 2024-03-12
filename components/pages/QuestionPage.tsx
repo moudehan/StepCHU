@@ -14,7 +14,15 @@ import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
 import * as Progress from "react-native-progress";
 import { useAuth } from "../../AuthContext";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import Badge from "../../types/Badge";
 
@@ -65,6 +73,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   const [progressValue, setProgressValue] = useState(1);
   const [selectedReponse, setSelectedReponse] = useState<number>(-1);
   const [showAnswer, setShowAnswer] = useState(false);
+  const { authState } = useAuth();
 
   let dateNow = new Date();
   let partieEntiere = parseInt((quiz.questions.length / 2).toString());
@@ -170,7 +179,13 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
                   )}
 
                   <Text
-                    style={showAnswer ? (reponse.isCorrect ? styles.TextShowCorrectAnswer : styles.TextShowWrongAnswer) : styles.TextAnswer }
+                    style={
+                      showAnswer
+                        ? reponse.isCorrect
+                          ? styles.TextShowCorrectAnswer
+                          : styles.TextShowWrongAnswer
+                        : styles.TextAnswer
+                    }
                   >
                     {reponse.text}
                   </Text>
@@ -201,13 +216,13 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
               }
               if (questionIndex < quiz.questions.length - 1) {
                 setShowAnswer(true);
-                await new Promise(r => setTimeout(r, 2000));
+                await new Promise((r) => setTimeout(r, 2000));
                 setShowAnswer(false);
                 setSelectedReponse(-1);
                 setQuestionIndex(questionIndex + 1);
               } else {
                 setShowAnswer(true);
-                await new Promise(r => setTimeout(r, 2000));
+                await new Promise((r) => setTimeout(r, 2000));
                 setShowModal(true);
               }
             }
@@ -254,7 +269,14 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
                 borderRadius: 10,
                 marginTop: 20,
               }}
-              onPress={() => {
+              onPress={async () => {
+                //TODO update the user by adding the quizz in it
+                const userDocRef = doc(db, "utilisateurs", authState.userId!);
+                const userDocData = (await getDoc(userDocRef)).data()
+                const quizDocRef = doc(db, "quiz", quiz.id);
+
+                await updateDoc(userDocRef, userDocData?.quiz ? { quiz: [...userDocData?.quiz, quizDocRef] }: { quiz: [quizDocRef] });
+
                 navigation.navigate("Quiz");
               }}
             >
@@ -284,7 +306,8 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
             <Text
               style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}
             >
-              Mince, vous n'avez pas eu le temps de finir. Une prochaine fois peut-être !
+              Mince, vous n'avez pas eu le temps de finir. Une prochaine fois
+              peut-être !
             </Text>
 
             <Text style={{ textAlign: "center", marginVertical: 20 }}>
@@ -332,17 +355,17 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   TextAnswer: {
-    fontSize: 16
+    fontSize: 16,
   },
   TextShowWrongAnswer: {
     fontSize: 16,
     color: "red",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   TextShowCorrectAnswer: {
     fontSize: 16,
     color: "green",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   listeReponse: {
     marginVertical: 20,
