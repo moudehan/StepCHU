@@ -8,24 +8,15 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { Svg, SvgFromUri, SvgXml } from "react-native-svg";
 import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
 import { useAuth } from "../../AuthContext";
 import * as Progress from "react-native-progress";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import { fetchBage } from "../services/BadgesService";
 import { fetchUserByID } from "../services/UserService";
 import Badge from "../../types/Badge";
-import { set } from "date-fns";
 import BadgeColor from "../../types/BadgeColor";
 
 interface NewsPageProps {
@@ -36,7 +27,7 @@ interface NewsPageProps {
 const nbItemsInRow = 3;
 
 export default function BadgePage({ navigation }: NewsPageProps) {
-  const [badges, setBadges] = useState<any[]>([]);
+  const [badges, setBadges] = useState<Badge[]>([]);
 
   const userId = useAuth();
 
@@ -46,7 +37,7 @@ export default function BadgePage({ navigation }: NewsPageProps) {
         if (userId.authState.userId) {
           const user = await fetchUserByID(userId.authState.userId);
           const fetchBadges = await fetchBage();
-          let tabBadge: any[] = [];
+          let tabBadge: Badge[] = [];
           fetchBadges.map((badge) => {
             if (user?.badges) {
               let badgeFound = false;
@@ -132,7 +123,7 @@ export default function BadgePage({ navigation }: NewsPageProps) {
                 </Text>
               </View>
               <Progress.Bar
-                progress={badge.points / getBadgeColor(badge).maxPoints}
+                progress={(badge.points ?? 0) / getBadgeColor(badge).maxPoints}
                 width={79}
                 height={10}
                 color="#E26C61"
