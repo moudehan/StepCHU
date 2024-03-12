@@ -59,6 +59,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [nbResponseCorrect, setNbResponseCorrect] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [showBadModal, setShowBadModal] = useState(false);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [progressValue, setProgressValue] = useState(1);
@@ -87,7 +88,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
       setMinutes(0);
       setSeconds(0);
       setProgressValue(0);
-      setShowModal(true);
+      setShowBadModal(true);
     }
   };
   useEffect(() => {
@@ -240,6 +241,50 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
               style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}
             >
               Bravo, vous avez terminé le quiz !
+            </Text>
+
+            <Text style={{ textAlign: "center", marginVertical: 20 }}>
+              Vous avez obtenu {nbResponseCorrect}/{quiz.questions.length}
+            </Text>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#E26C61",
+                padding: 10,
+                borderRadius: 10,
+                marginTop: 20,
+              }}
+              onPress={() => {
+                navigation.navigate("Quiz");
+              }}
+            >
+              <Text style={{ color: "white", textAlign: "center" }}>
+                Retour à la liste des quiz
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal transparent={true} visible={showBadModal}>
+        <View style={{ backgroundColor: "rgba(0,0,0,0.4)", flex: 1 }}>
+          <View
+            style={{
+              height: "60%",
+              backgroundColor: "white",
+              padding: 20,
+              top: "50%",
+              borderRadius: 50,
+            }}
+          >
+            <Image
+              source={require("../../assets/finQuiz.png")}
+              style={{ width: 200, height: 200, alignSelf: "center" }}
+            />
+            <Text
+              style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}
+            >
+              Mince, vous n'avez pas eu le temps de finir. Une prochaine fois peut-être !
             </Text>
 
             <Text style={{ textAlign: "center", marginVertical: 20 }}>
