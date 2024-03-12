@@ -78,7 +78,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
 
     setMinutes(Math.floor((time / 1000 / 60) % 60));
     setSeconds(Math.floor((time / 1000) % 60));
-    setProgressValue(Number((time / 1000 / 60 / 10).toFixed(2)));
+    setProgressValue(time/fullTime);
     if (time < 0) {
       setMinutes(0);
       setSeconds(0);
@@ -88,7 +88,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   };
   useEffect(() => {
     const interval = setInterval(() => getTime(), 1000);
-    setFullTime(quiz.questions.length * 30);
+    setFullTime(Date.parse(datePlusXMinutes.toString()) - Date.now());
     return () => clearInterval(interval);
   }, []);
 
@@ -108,13 +108,13 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
           </Text>
           <View>
             <Progress.Bar
-              progress={progressValue}
+              progress={(progressValue)}
               width={200}
               height={10}
               color="#E26C61"
             />
           </View>
-          <Text>{fullTime}</Text>
+          <Text></Text>
         </View>
         <Text
           style={{
