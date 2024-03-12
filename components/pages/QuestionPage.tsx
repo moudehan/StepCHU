@@ -63,6 +63,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   const [seconds, setSeconds] = useState(0);
   const [progressValue, setProgressValue] = useState(1);
   const [selectedReponse, setSelectedReponse] = useState<number>(-1);
+  const [showAnswer, setShowAnswer] = useState(false);
 
   let dateNow = new Date();
   let partieEntiere = parseInt((quiz.questions.length / 2).toString());
@@ -167,7 +168,11 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
                     <Image source={require("../../assets/radio.png")} />
                   )}
 
-                  <Text style={{ fontSize: 16 }}>{reponse.text}</Text>
+                  <Text
+                    style={showAnswer ? (reponse.isCorrect ? styles.TextShowCorrectAnswer : styles.TextShowWrongAnswer) : styles.TextAnswer }
+                  >
+                    {reponse.text}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -183,16 +188,24 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
             justifyContent: "center",
             alignItems: "center",
           }}
-          onPress={() => {
+          onPress={async () => {
             if (selectedReponse != -1) {
               if (
                 quiz.questions[questionIndex].answers[selectedReponse].isCorrect
               ) {
                 setNbResponseCorrect(nbResponseCorrect + 1);
+                console.log("bonne réponse");
+              } else {
+                console.log("mauvaise réponse");
               }
               if (questionIndex < quiz.questions.length - 1) {
+                setShowAnswer(true);
+                await new Promise(r => setTimeout(r, 2000));
+                setShowAnswer(false);
                 setQuestionIndex(questionIndex + 1);
               } else {
+                setShowAnswer(true);
+                await new Promise(r => setTimeout(r, 2000));
                 setShowModal(true);
               }
             }
@@ -271,6 +284,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginVertical: 5,
+  },
+  TextAnswer: {
+    fontSize: 16
+  },
+  TextShowWrongAnswer: {
+    fontSize: 16,
+    color: "red",
+    fontWeight: "bold"
+  },
+  TextShowCorrectAnswer: {
+    fontSize: 16,
+    color: "green",
+    fontWeight: "bold"
   },
   listeReponse: {
     marginVertical: 20,
