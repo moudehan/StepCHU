@@ -202,6 +202,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
                 setShowAnswer(true);
                 await new Promise(r => setTimeout(r, 2000));
                 setShowAnswer(false);
+                setSelectedReponse(-1);
                 setQuestionIndex(questionIndex + 1);
               } else {
                 setShowAnswer(true);
