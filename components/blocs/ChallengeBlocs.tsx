@@ -55,13 +55,12 @@ export default function ChallengeBlocs({
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         const date = new Date(data.date);
-        console.log(data, date);
         if (
-          date.getTime() < start.toDate().getTime() &&
-          date.getTime() > end.toDate().getTime()
+          date.setUTCHours(0, 0, 0, 0) >=
+            start.toDate().setUTCHours(0, 0, 0, 0) &&
+          date.setUTCHours(0, 0, 0, 0) <= end.toDate().setUTCHours(0, 0, 0, 0)
         ) {
-          console.log(date.getTime());
-          steps += data.steps;
+          steps = steps + parseInt(data.steps);
         }
       });
       setStepsData(steps);
@@ -84,12 +83,31 @@ export default function ChallengeBlocs({
         </Text>
       </View>
 
-      <Text>{stepsData}</Text>
+      <View>
+        <Text style={Styles.objectiveSteps}>
+          {stepsData}/{quantity}
+        </Text>
+      </View>
 
-      {start.toDate() < today && end.toDate() > today ? (
-        <Progress.Bar progress={0.5} width={null} height={10} color="#E26C61" />
-      ) : (
+      {start.toDate().setUTCHours(0, 0, 0, 0) <=
+        today.setUTCHours(0, 0, 0, 0) &&
+        end.toDate().setUTCHours(0, 0, 0, 0) >=
+          today.setUTCHours(0, 0, 0, 0) && (
+          <Progress.Bar
+            progress={(stepsData/quantity)}
+            width={null}
+            height={10}
+            color="#E26C61"
+          />
+        )}
+
+      {start.toDate().setUTCHours(0, 0, 0, 0) >
+        today.setUTCHours(0, 0, 0, 0) && (
         <Text style={Styles.soonText}>Le challenge démarre bientôt !</Text>
+      )}
+
+      {end.toDate().setUTCHours(0, 0, 0, 0) < today.setUTCHours(0, 0, 0, 0) && (
+        <Text style={Styles.soonText}>Le challenge est terminé !</Text>
       )}
     </View>
   );
@@ -113,4 +131,7 @@ const Styles = StyleSheet.create({
     fontWeight: "bold",
     padding: 10,
   },
+  objectiveSteps: {
+    color: "grey"
+  }
 });
