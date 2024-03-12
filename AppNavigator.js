@@ -8,6 +8,8 @@ import NewsPage from "./components/pages/NewsPage";
 import ProfilPage from "./components/pages/ProfilPage";
 import StatsPage from "./components/pages/StatsPage";
 import BadgePage from "./components/pages/BadgePage";
+import QuizPage from "./components/pages/QuizPage";
+import QuestionPage from "./components/pages/QuestionPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +55,16 @@ function AppNavigator({ initialRouteName }) {
       <Stack.Screen
         name="Stats"
         component={StatsPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Quiz"
+        component={QuizPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Question"
+        component={QuestionPage}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

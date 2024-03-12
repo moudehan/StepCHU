@@ -16,7 +16,9 @@ import * as Progress from "react-native-progress";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import { fetchBage } from "../services/BadgesService";
+import { fetchUserByID } from "../services/UserService";
 import Badge from "../../types/Badge";
+import { set } from "date-fns";
 
 interface NewsPageProps {
   navigation: any;
@@ -25,31 +27,42 @@ interface NewsPageProps {
 
 const nbItemsInRow = 3;
 
-function updateBadgesUser() {
-  const [alBadges, setAllBadges] = useState<Badge[]>([]);
-
-  useEffect(() => {
-    const fetchAlBadge = async () => {
-      const badges = await fetchBage();
-      setAllBadges(badges);
-    };
-    fetchAlBadge();
-  }, []);
-}
-
 export default function BadgePage({ navigation }: NewsPageProps) {
-  const [badges, setBadges] = useState<Badge[]>([]);
+  const [badges, setBadges] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchAlBadge = async () => {
-      const badges = await fetchBage();
-      setBadges(badges);
-    };
-    fetchAlBadge();
-  }, []);
+  const userId = useAuth();
 
-  // console.log({ badges });
-  // if (badges[0]) console.log(badges[0].badgeColors[0].image);
+  async function updateBadgesUser() {
+    useEffect(() => {
+      const fetchAllBadge = async () => {
+        if (userId.authState.userId) {
+          const user = await fetchUserByID(userId.authState.userId);
+          const fetchBadges = await fetchBage();
+          let tabBadge = [];
+          fetchBadges.map((badge) => {
+            if (user?.badges) {
+              user?.badges.map((userBadge) => {
+                if (badge.id != userBadge.badge.id) {
+                } else {
+                }
+              });
+            } else {
+              tabBadge.push({ ...badge, points: 0 });
+            }
+          });
+          setBadges(tabBadge);
+        }
+      };
+      fetchAllBadge();
+    }, []);
+  }
+  //   console.log();
+  updateBadgesUser();
+
+  //   console.log(badges);
+  if (badges.length > 0) console.log(badges[0].badgeColors[2].maxPoints);
+  if (badges.length > 0) console.log(badges[0].badgeColors[2].minPoints);
+  if (badges.length > 0) console.log(badges[0].points);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -63,6 +76,7 @@ export default function BadgePage({ navigation }: NewsPageProps) {
         <View style={styles.gridContainer}>
           {badges.map((badge, index) => (
             <View key={index} style={[styles.gridItem]}>
+              {}
               <Image
                 source={{ uri: badge.badgeColors[2].image }}
                 height={101}
@@ -88,38 +102,7 @@ export default function BadgePage({ navigation }: NewsPageProps) {
                 color="#E26C61"
               />
               <Text style={styles.gridTextDescription}>
-                185 / {badge.badgeColors[0].maxPoints}
-              </Text>
-            </View>
-          ))}
-          {badges.map((badge, index) => (
-            <View key={index} style={[styles.gridItem]}>
-              <Image
-                source={{ uri: badge.badgeColors[0].image }}
-                height={101}
-                width={79}
-              />
-
-              <Text style={styles.gridTextTitle}>{badge.name}</Text>
-              <View
-                style={{
-                  height: 40,
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <Text style={styles.gridTextDescription}>
-                  {badge.description}
-                </Text>
-              </View>
-              <Progress.Bar
-                progress={0.5}
-                width={79}
-                height={10}
-                color="#E26C61"
-              />
-              <Text style={styles.gridTextDescription}>
-                185 / {badge.badgeColors[0].maxPoints}
+                {badge.points} / {badge.badgeColors[0].maxPoints}
               </Text>
             </View>
           ))}

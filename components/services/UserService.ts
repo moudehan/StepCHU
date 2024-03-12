@@ -1,27 +1,28 @@
 import { db } from "../../fireBase/FirebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  updateDoc,
+  doc,
+  query,
+  where,
+} from "firebase/firestore";
 import Badge from "../../types/Badge";
 import { useAuth } from "../../AuthContext";
+import { UserType } from "../../types/UserType";
 
-export const fetchUser = async (): Promise<any> => {
-  const { userId } = useAuth();
-  console.log(userId);
-  //   const querySnapshot = await getDocs(collection(db, "utilisateurs"));
-  //   return querySnapshot.docs.map((doc) => ({
-  //     id: doc.id,
-  //     ...doc.data(),
-  //   })) as Badge[];
-  // const usersRef = collection(db, "utilisateurs");
-  //     const q = query(usersRef, where("name", "==", userName));
+export const fetchUserByID = async (
+  userId: string
+): Promise<UserType | null> => {
+  //   console.log(userId);
+  let user: UserType | null = null;
+  const userDocRef = doc(db, "utilisateurs", userId);
+  const userDocSnap = await getDoc(userDocRef);
 
-  //   const querySnapshot = await query(
-  //     collection(db, "utilisateurs"),
-  //     where("id", "==", "badge1")
-  //   );
+  if (userDocSnap.exists()) {
+    user = userDocSnap.data() as UserType;
+  }
 
-  //   return querySnapshot.docs.map((doc) => ({
-  //     id: doc.id,
-  //     ...doc.data(),
-  //   })) as Badge[];
-  return null;
+  return user;
 };
