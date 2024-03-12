@@ -7,6 +7,7 @@ import SettingsPage from "./components/pages/SettingsPage";
 import NewsPage from "./components/pages/NewsPage";
 import ProfilPage from "./components/pages/ProfilPage";
 import StatsPage from "./components/pages/StatsPage";
+import ChallengesPage from "./components/pages/ChallengesPage";
 import BadgePage from "./components/pages/BadgePage";
 import QuizPage from "./components/pages/QuizPage";
 import QuestionPage from "./components/pages/QuestionPage";
@@ -55,6 +56,11 @@ function AppNavigator({ initialRouteName }) {
       <Stack.Screen
         name="Stats"
         component={StatsPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ChallengesScreen"
+        component={ChallengesPage}
         options={{ headerShown: false }}
       />
       <Stack.Screen
