@@ -6,12 +6,13 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
+  Modal,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingPage from "./LoadingPage";
 import TabBar from "../navDrawer/TabBar";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import { useAuth } from "../../AuthContext";
 
@@ -26,10 +27,32 @@ interface MenuItemsProps {
   onPress: any;
 }
 
+const avatars = [
+  require("../../assets/avatar/Avatar1.png"),
+  require("../../assets/avatar/Avatar2.png"),
+  require("../../assets/avatar/Avatar3.png"),
+  require("../../assets/avatar/Avatar4.png"),
+  require("../../assets/avatar/Avatar5.png"),
+  require("../../assets/avatar/Avatar6.png"),
+  require("../../assets/avatar/Avatar7.png"),
+  require("../../assets/avatar/Avatar8.png"),
+  require("../../assets/avatar/Avatar9.png"),
+  require("../../assets/avatar/Avatar10.png"),
+  require("../../assets/avatar/Avatar11.png"),
+  require("../../assets/avatar/Avatar12.png"),
+];
+
 export default function ProfilPage({ navigation }: ProfilPageProps) {
   const [activeTab, setActiveTab] = useState("profil");
-  const [userData, setUserData] = useState({ id: "", name: "" });
+  const [userData, setUserData] = useState({
+    id: "",
+    name: "",
+    idAvatar: 0,
+  });
   const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [avatarId, setAvatarId] = useState(0);
+  const [tmpAvatarId, setTmpAvatarId] = useState(avatarId);
 
   const { authState } = useAuth();
 
@@ -44,12 +67,17 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
           setUserData({
             id: docSnap.id,
             name: data.name,
+            idAvatar: data.idAvatar ?? Math.floor(Math.random() * 10) + 1,
           });
         } else {
           console.debug("Aucun document trouvé!");
         }
       }
     };
+
+    if (userData.idAvatar) {
+      setAvatarId(userData.idAvatar);
+    }
 
     fetchUserData();
     const unsubscribe = navigation.addListener("focus", () => {
@@ -69,6 +97,23 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
     }, 3000);
   };
 
+  useEffect(() => {
+    if (userData.idAvatar) {
+      setAvatarId(userData.idAvatar);
+    }
+  }, [userData.idAvatar]);
+
+  useEffect(() => {
+    setTmpAvatarId(avatarId);
+    async function updateUser() {
+      const userDocRef = doc(db, "utilisateurs", userData.id!);
+      await updateDoc(userDocRef, { idAvatar: avatarId });
+    }
+    if (userData.id) {
+      updateUser();
+    }
+  }, [avatarId]);
+
   if (isLoading) {
     return <LoadingPage />;
   }
@@ -77,10 +122,9 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
       <View style={styles.upperSection}>
         {/* <Icon name="stats-chart" color="white" style={styles.editIcon} /> */}
         <View style={styles.profileSection}>
-          <Image
-            source={require("../../assets/splash.png")}
-            style={styles.profilePic}
-          />
+          <TouchableOpacity onPress={() => setShowModal(true)}>
+            <Image source={avatars[avatarId - 1]} style={styles.profilePic} />
+          </TouchableOpacity>
           <Text style={styles.profileUserName}>
             utilisateur : {userData.name}
           </Text>
@@ -117,6 +161,46 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
         setActiveTab={setActiveTab}
         navigation={navigation}
       />
+      <Modal animationType="slide" transparent={true} visible={showModal}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Avatar</Text>
+            <View style={styles.modalListeImage}>
+              {avatars.map((avatar, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    setTmpAvatarId(index + 1);
+                  }}
+                >
+                  {tmpAvatarId === index + 1 ? (
+                    <Image
+                      source={require("../../assets/avatar/selected.png")}
+                      style={{ position: "absolute", bottom: -6, right: -6 }}
+                    />
+                  ) : null}
+                  <Image source={avatar} style={styles.profilePic} />
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+              <TouchableOpacity
+                style={styles.buttonAnnuler}
+                onPress={() => setShowModal(false)}
+              >
+                <Text style={styles.buttonText}>Annuler</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.buttonValider}
+                onPress={() => (setShowModal(false), setAvatarId(tmpAvatarId))}
+              >
+                <Text style={styles.buttonText}>Valider</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -133,6 +217,53 @@ const MenuItem = ({ iconName, text, isLastItem, onPress }: MenuItemsProps) => (
 );
 
 const styles = StyleSheet.create({
+  modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 15,
+  },
+  modalListeImage: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 25,
+  },
+  buttonValider: {
+    backgroundColor: "#146591",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  buttonAnnuler: {
+    backgroundColor: "#E26C61",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "#fff",
+    marginHorizontal: "auto",
+  },
   safeArea: {
     flex: 1,
     backgroundColor: "#FFFFFF",
