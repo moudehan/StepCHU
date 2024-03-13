@@ -24,7 +24,6 @@ async function registerForPushNotificationsAsync() {
 
   try {
     const token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
   } catch (error) {
     console.error(error);
   }

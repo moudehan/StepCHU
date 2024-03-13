@@ -18,6 +18,7 @@ import { StepCounter } from "../steps/StepCounter";
 import LoadingPage from "./LoadingPage";
 import { useUserAlert } from "../Modals/AlertUserModal";
 import useBackgroundNotification from "../notificaton/stepCounterNotif";
+import TitleBlocks from "../blocs/Title";
 
 interface WelcomePageProps {
   navigation: any;
@@ -86,6 +87,7 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
           <Histogram></Histogram>
         </View>
         <View style={styles.linkedBlocksWrapper}>
+          <TitleBlocks></TitleBlocks>
           <View style={styles.blueContainer1} />
           <View style={styles.linkedBlocksContainer}>
             <LinkedBlocks navigation={navigation} />

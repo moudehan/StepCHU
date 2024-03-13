@@ -31,14 +31,11 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
   }, []);
 
   const handlePress = (newsletterId: string) => {
-    navigation.navigate("Actualites", { id: newsletterId });
+    navigation.navigate("Newsletter", { id: newsletterId });
   };
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Actualités</Text>
-      </View>
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -51,7 +48,7 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
             onPress={() => handlePress(item.id)}
           >
             <View style={styles.textContainer}>
-              <Text style={styles.title}>{item.name}</Text>
+              <Text style={styles.title}>{item.name.substring(0, 20)}...</Text>
               <Text style={styles.description}>
                 {item.description.length > 30
                   ? `${item.description.substring(0, 40)}...`
@@ -73,34 +70,12 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
-  headerContainer: {
-    backgroundColor: "#FFBB00",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    width: 150,
-    height: 50,
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
-    marginLeft: 10,
-    marginRight: -20,
-    marginTop: 0,
-    elevation: 6,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    zIndex: 1,
-  },
-  headerTitle: {
-    color: "#FFF",
-    fontWeight: "bold",
-    fontSize: 18,
-  },
+
   scrollContainer: {
     flexGrow: 0,
-    marginTop: 10,
+    marginTop: 0,
   },
   block: {
     backgroundColor: "white",
