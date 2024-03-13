@@ -241,6 +241,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     gap: 25,
+    marginBottom: 20,
   },
   buttonValider: {
     backgroundColor: "#146591",
