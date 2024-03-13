@@ -48,75 +48,30 @@ interface Point {
   number: number;
 }
 
-// const QuizDebloques = [
-//   {
-//     id: 1,
-//     name: "Quiz 1",
-//     description: "20 questions",
-//   },
-//   {
-//     id: 2,
-//     name: "Quiz 2",
-//     description: "20 questions",
-//   },
-// ];
-
-// const QuizNonDebloques = [
-//   {
-//     id: 3,
-//     name: "Quiz 3",
-//     description: "20 questions",
-//   },
-//   {
-//     id: 4,
-//     name: "Quiz 4",
-//     description: "20 questions",
-//   },
-// ];
-
-// const QuizTermines = [
-//   {
-//     id: 5,
-//     name: "Quiz 5",
-//     description: "20 questions",
-//   },
-//   {
-//     id: 6,
-//     name: "Quiz 6",
-//     description: "20 questions",
-//   },
-// ];
-
 export default function QuizPage({ navigation }: NewsPageProps) {
   const { authState } = useAuth();
   const [quiz, setQuiz] = useState<Quiz[]>([]);
   const [doneQuiz, setDoneQuiz] = useState<Quiz[]>([]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       const fetchQuiz = async () => {
-        // const querySnapshot = await getDocs(collection(db, "badges"));
-  
         const userDocRef = doc(db, "utilisateurs", authState.userId!);
         const allQuiz = await getDocs(query(collection(db, "quizzes")));
         const userData = (await getDoc(userDocRef)).data();
-  
+
         const quiz: any = [];
         const quizDone: any = [];
-  
+
         if (userData?.quiz) {
           await userData?.quiz.forEach(async (userQuiz: any) => {
-            const quizDocRef = doc(db, "quizzes", userQuiz);
+            const quizDocRef = doc(db, "quizzes", userQuiz.id);
             const quizDoc = await getDoc(quizDocRef);
-  
+
             allQuiz.forEach((doc) => {
               if (quizDoc.id != doc.id) {
-                console.log("not done");
-  
                 quiz.push({ id: doc.id, ...doc.data() });
               } else {
-                console.log("done");
-  
                 quizDone.push({ id: doc.id, ...doc.data() });
               }
             });
@@ -130,7 +85,7 @@ export default function QuizPage({ navigation }: NewsPageProps) {
           setQuiz(quiz);
         }
       };
-      fetchQuiz();        
+      fetchQuiz();
     });
 
     return unsubscribe;

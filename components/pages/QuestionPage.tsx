@@ -73,6 +73,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   const [progressValue, setProgressValue] = useState(1);
   const [selectedReponse, setSelectedReponse] = useState<number>(-1);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [points, setPoints] = useState(0);
   const { authState } = useAuth();
 
   let dateNow = new Date();
@@ -210,7 +211,12 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
                 quiz.questions[questionIndex].answers[selectedReponse].isCorrect
               ) {
                 setNbResponseCorrect(nbResponseCorrect + 1);
-                console.log("bonne réponse");
+                const total =
+                  points +
+                  parseInt(
+                    quiz.questions[questionIndex].point.number.toString()
+                  );
+                setPoints(total);
               } else {
                 console.log("mauvaise réponse");
               }
@@ -271,9 +277,19 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
               }}
               onPress={async () => {
                 const userDocRef = doc(db, "utilisateurs", authState.userId!);
-                const userDocData = (await getDoc(userDocRef)).data()
+                const userDocData = (await getDoc(userDocRef)).data();
 
-                await updateDoc(userDocRef, userDocData?.quiz ? { quiz: [...userDocData?.quiz, quiz.id] }: { quiz: [quiz.id] });
+                await updateDoc(
+                  userDocRef,
+                  userDocData?.quiz
+                    ? {
+                        quiz: [
+                          ...userDocData?.quiz,
+                          { id: quiz.id, pointsEarned: points },
+                        ],
+                      }
+                    : { quiz: [{ id: quiz.id, pointsEarned: points }] }
+                );
 
                 navigation.navigate("Quiz");
               }}
