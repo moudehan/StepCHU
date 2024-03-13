@@ -69,8 +69,6 @@ export default function QuizPage({ navigation }: NewsPageProps) {
             const quizDoc = await getDoc(quizDocRef);
 
             allQuiz.forEach((doc) => {
-              console.log(doc.id);
-              console.log(quizDoc.id);
               if (quizDoc.id != doc.id) {
                 quiz.push({ id: doc.id, ...doc.data() });
               } else {

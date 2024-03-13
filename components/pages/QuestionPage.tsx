@@ -14,17 +14,11 @@ import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
 import * as Progress from "react-native-progress";
 import { useAuth } from "../../AuthContext";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import Badge from "../../types/Badge";
+import { UserType } from "../../types/UserType";
+import { getBadgeUser, updateUserBadges } from "../services/BadgesService";
 
 interface QuestionPageProps {
   navigation: any;
@@ -60,10 +54,7 @@ interface Point {
 
 export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   const { quiz }: { quiz: Quiz } = route.params;
-  // console.log(quiz.questions);
-  // console.log(quiz.questions[0].answers[0]);
-  // const { userId } = useAuth();
-  // const [questionQuiz, setQuestionQuiz] = useState<QuestionQuiz[]>([]);
+
   const [questionIndex, setQuestionIndex] = useState(0);
   const [nbResponseCorrect, setNbResponseCorrect] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -75,6 +66,11 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   const [showAnswer, setShowAnswer] = useState(false);
   const [points, setPoints] = useState(0);
   const { authState } = useAuth();
+  const [isClockRunning, setIsClockRunning] = useState(true);
+
+  const stopClock = () => {
+    setIsClockRunning(false);
+  };
 
   let dateNow = new Date();
   let partieEntiere = parseInt((quiz.questions.length / 2).toString());
@@ -99,12 +95,19 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
       setSeconds(0);
       setProgressValue(0);
       setShowBadModal(true);
+      stopClock();
     }
   };
+
   useEffect(() => {
-    const interval = setInterval(() => getTime(), 1000);
+    const interval = setInterval(() => {
+      if (isClockRunning) {
+        getTime();
+      }
+    }, 1000);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [isClockRunning]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -170,7 +173,6 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
                     alignItems: "center",
                   }}
                 >
-                  {/* {selectedReponse === reponse.id ? ( */}
                   {selectedReponse === index ? (
                     <Image
                       source={require("../../assets/radio_selected.png")}
@@ -196,6 +198,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
           </View>
         </View>
         <TouchableOpacity
+          disabled={showAnswer}
           style={{
             backgroundColor: "#13A6B6",
             padding: 10,
@@ -217,12 +220,12 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
                     quiz.questions[questionIndex].point.number.toString()
                   );
                 setPoints(total);
-              } else {
-                console.log("mauvaise réponse");
               }
               if (questionIndex < quiz.questions.length - 1) {
                 setShowAnswer(true);
+                stopClock();
                 await new Promise((r) => setTimeout(r, 2000));
+
                 setShowAnswer(false);
                 setSelectedReponse(-1);
                 setQuestionIndex(questionIndex + 1);
@@ -230,6 +233,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
                 setShowAnswer(true);
                 await new Promise((r) => setTimeout(r, 2000));
                 setShowModal(true);
+                stopClock();
               }
             }
           }}
@@ -277,7 +281,9 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
               }}
               onPress={async () => {
                 const userDocRef = doc(db, "utilisateurs", authState.userId!);
-                const userDocData = (await getDoc(userDocRef)).data();
+                const userDocData = (
+                  await getDoc(userDocRef)
+                ).data() as UserType;
 
                 await updateDoc(
                   userDocRef,
@@ -290,6 +296,19 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
                       }
                     : { quiz: [{ id: quiz.id, pointsEarned: points }] }
                 );
+
+                getBadgeUser(userDocData!).then((badges) => {
+                  let test: number = badges.findIndex(
+                    (badge: Badge) => badge.id === quiz.badge.id
+                  );
+
+                  if (test !== -1) {
+                    badges[test].points += points;
+                  } else {
+                    badges.push({ id: quiz.badge.id, points: points });
+                  }
+                  updateUserBadges(authState.userId!, badges);
+                });
 
                 navigation.navigate("Quiz");
               }}

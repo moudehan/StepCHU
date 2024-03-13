@@ -12,9 +12,7 @@ import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
 import { useAuth } from "../../AuthContext";
 import * as Progress from "react-native-progress";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../fireBase/FirebaseConfig";
-import { fetchBage } from "../services/BadgesService";
+import { getBadgeUser, updateUserBadges } from "../services/BadgesService";
 import { fetchUserByID } from "../services/UserService";
 import Badge from "../../types/Badge";
 import BadgeColor from "../../types/BadgeColor";
@@ -23,8 +21,6 @@ interface NewsPageProps {
   navigation: any;
   route?: any;
 }
-
-const nbItemsInRow = 3;
 
 export default function BadgePage({ navigation }: NewsPageProps) {
   const [badges, setBadges] = useState<Badge[]>([]);
@@ -36,24 +32,11 @@ export default function BadgePage({ navigation }: NewsPageProps) {
       const fetchAllBadge = async () => {
         if (userId.authState.userId) {
           const user = await fetchUserByID(userId.authState.userId);
-          const fetchBadges = await fetchBage();
-          let tabBadge: Badge[] = [];
-          fetchBadges.map((badge) => {
-            if (user?.badges) {
-              let badgeFound = false;
-              user?.badges.map((userBadge) => {
-                if (badge.id == userBadge.id) {
-                  badgeFound = true;
-                  tabBadge.push({ ...badge, points: userBadge.points });
-                }
-              });
-              if (!badgeFound) {
-                tabBadge.push({ ...badge, points: 0 });
-              }
-            } else {
-              tabBadge.push({ ...badge, points: 0 });
-            }
-          });
+          if (!user) {
+            return [];
+          }
+          const tabBadge = await getBadgeUser(user);
+
           setBadges(tabBadge);
         }
       };
@@ -68,8 +51,7 @@ export default function BadgePage({ navigation }: NewsPageProps) {
         tabBadge.push({ id: badge.id, points: badge.points });
       });
 
-      const userDocRef = doc(db, "utilisateurs", userId.authState.userId!);
-      await updateDoc(userDocRef, { badges: tabBadge });
+      await updateUserBadges(userId.authState.userId!, tabBadge);
     }
     if (badges.length != 0) {
       updateUserBages();
