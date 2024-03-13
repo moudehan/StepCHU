@@ -48,10 +48,10 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
             onPress={() => handlePress(item.id)}
           >
             <View style={styles.textContainer}>
-              <Text style={styles.title}>{item.name.substring(0, 20)}...</Text>
+              <Text style={styles.title}>{item.name}</Text>
               <Text style={styles.description}>
                 {item.description.length > 30
-                  ? `${item.description.substring(0, 40)}...`
+                  ? `${item.description}`
                   : item.description}
               </Text>
             </View>
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 10,
     overflow: "hidden",
-    width: 250,
+    width: 350,
     height: 120,
     flexDirection: "row",
     alignItems: "center",
@@ -94,12 +94,13 @@ const styles = StyleSheet.create({
   textContainer: {
     backgroundColor: "#FFF",
     padding: 10,
-    width: "50%",
+    width: "75%",
+    height: "100%",
     justifyContent: "center",
     zIndex: 1,
   },
   title: {
-    color: "#000",
+    color: "#146591",
     fontWeight: "bold",
     fontSize: 16,
   },
@@ -108,14 +109,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   imageContainer: {
-    width: "50%",
+    width: "25%",
     height: "100%",
     overflow: "hidden",
   },
   image: {
     width: "100%",
     height: "100%",
-    resizeMode: "cover",
   },
 });
 export default LinkedBlocks;

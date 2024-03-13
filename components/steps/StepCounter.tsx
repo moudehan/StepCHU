@@ -24,7 +24,6 @@ export const StepCounter = () => {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [isCreatingDoc, setIsCreatingDoc] = useState(false);
   const { authState } = useAuth();
-
   useEffect(() => {
     const updateCurrentUser = async () => {
       if (authState.userId) {
@@ -69,14 +68,6 @@ export const StepCounter = () => {
   }, [authState.userDetails, currentUser]);
 
   async function requestActivityRecognitionPermission() {
-    const isPermissionGranted = await AsyncStorage.getItem(
-      "activityRecognitionPermissionGranted"
-    );
-    if (isPermissionGranted === "true") {
-      setPermissionGranted(true);
-      return;
-    }
-
     try {
       if (Platform.OS === "android") {
         const granted = await PermissionsAndroid.request(
@@ -128,7 +119,15 @@ export const StepCounter = () => {
     let docId = "";
 
     async function subscribe() {
-      if (permissionGranted && currentUserId && currentUser) {
+      const authenticated = await AsyncStorage.getItem("Authenticate");
+      const isAuthenticated = authenticated === "true";
+
+      if (
+        permissionGranted &&
+        currentUserId &&
+        currentUser &&
+        isAuthenticated
+      ) {
         const isAvailable = await Pedometer.isAvailableAsync();
         setIsPedometerAvailable(String(isAvailable));
 
@@ -137,18 +136,14 @@ export const StepCounter = () => {
           const stepsCollectionRef = collection(db, "steps");
           const q = query(
             stepsCollectionRef,
-            where("user.userId", "==", currentUserId),
-            where("user.name", "==", currentUser.name),
+            where("userId", "==", currentUserId),
             where("date", "==", today)
           );
           const querySnapshot = await getDocs(q);
           if (querySnapshot.empty && !isCreatingDoc) {
             setIsCreatingDoc(true);
             const docRef = await addDoc(stepsCollectionRef, {
-              user: {
-                ...currentUser,
-                userId: currentUserId,
-              },
+              userId: currentUserId,
               date: today,
               steps: 0,
             });
@@ -165,7 +160,7 @@ export const StepCounter = () => {
           subscription = Pedometer.watchStepCount(async (result) => {
             const updatedStepCount = initialStepCount + result.steps;
             setCurrentStepCount(updatedStepCount);
-            updateStepCount(updatedStepCount); // Enregistrement des pas dans AsyncStorage
+            updateStepCount(updatedStepCount);
             if (docId) {
               await updateDoc(doc(db, "steps", docId), {
                 steps: updatedStepCount,

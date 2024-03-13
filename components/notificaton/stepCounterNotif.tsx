@@ -1,5 +1,3 @@
-// useBackgroundNotification.js
-
 import { useEffect } from "react";
 import * as Notifications from "expo-notifications";
 import { AppState } from "react-native";

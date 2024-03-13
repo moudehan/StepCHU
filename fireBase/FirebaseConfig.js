@@ -1,13 +1,13 @@
 import { getFirestore } from "@firebase/firestore";
 import { initializeApp } from "firebase/app";
 const firebaseConfig = {
-  apiKey: "AIzaSyBRPrKkC46xusJRSuOI4QyiFI8y50a4Q8g",
-  authDomain: "stepchu-db916.firebaseapp.com",
-  projectId: "stepchu-db916",
-  storageBucket: "stepchu-db916.appspot.com",
-  messagingSenderId: "1092161506914",
-  appId: "1:1092161506914:web:ee607b4f2399308000cb3b",
-  measurementId: "G-076CFZ2BHR",
+  apiKey: "AIzaSyAh3P3PeSdT3PilQlGTQHOrs_iuEQ_kXh8",
+  authDomain: "stepchu-ee8ee.firebaseapp.com",
+  projectId: "stepchu-ee8ee",
+  storageBucket: "stepchu-ee8ee.appspot.com",
+  messagingSenderId: "799912460741",
+  appId: "1:799912460741:web:2e1fa954399cf288898bac",
+  measurementId: "G-4EZSK23MKJ",
 };
 
 const app = initializeApp(firebaseConfig);
