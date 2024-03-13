@@ -117,11 +117,19 @@ const Histogram = () => {
             flatColor={true}
           />
         ) : (
-          <Text> Vous n'avez pas effectué de pas récemment</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+            Vous n'avez pas effectué de pas récemment
+          </Text>
         )}
       </View>
     </ScrollView>
   );
 };
-
+const styles = StyleSheet.create({
+  title: {
+    color: "#146591",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+});
 export default Histogram;

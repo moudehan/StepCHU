@@ -50,8 +50,9 @@ export default function NewsPage({ navigation, route }: NewsPageProps) {
     return unsubscribe;
   }, [navigation]);
 
-  const handleDownloadPDF = (url: string) => {
-    Linking.openURL(url).catch((err) =>
+  const handleOpenPDF = (url: string) => {
+    const googleDocsViewerUrl = `http://docs.google.com/gview?embedded=true&url=${encodeURIComponent(url)}`;
+    Linking.openURL(googleDocsViewerUrl).catch((err) =>
       console.error("An error occurred", err)
     );
   };
@@ -60,7 +61,7 @@ export default function NewsPage({ navigation, route }: NewsPageProps) {
     <SafeAreaView style={styles.safeArea}>
       <NavBar
         paramIcon={false}
-        title="Actualités"
+        title="Newsletter"
         navigation={navigation}
         paramBack={true}
       />
@@ -73,23 +74,22 @@ export default function NewsPage({ navigation, route }: NewsPageProps) {
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
       >
-        <View style={styles.headerTitleContainer}>
-          <View style={styles.headerLine} />
-          <Text style={styles.headerTitle}>Newsletter</Text>
-          <View style={styles.headerLine} />
-        </View>
         {newsletters.map((newsletter, index) => (
           <View key={index} style={styles.newsletterContainer}>
             <View style={styles.gridTitle}>
               <Text style={styles.gridText}>{newsletter.name}</Text>
             </View>
             <View style={styles.leftContainer}>
-              <Text style={styles.description}>{newsletter.description}</Text>
+              <Text style={styles.description}>
+                {newsletter.description.length > 70
+                  ? newsletter.description.substring(0, 70) + "..."
+                  : newsletter.description}
+              </Text>
             </View>
             <View style={styles.separator} />
             <TouchableOpacity
               style={styles.rightContainer}
-              onPress={() => handleDownloadPDF(newsletter.pdfUrl)}
+              onPress={() => handleOpenPDF(newsletter.pdfUrl)}
             >
               <Icon name="cloud-download" size={50} color="#F86A53" />
             </TouchableOpacity>
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-    paddingVertical: 20,
+    paddingVertical: 40,
     alignItems: "center",
     justifyContent: "flex-start",
   },
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   newsletterContainer: {
     backgroundColor: "#fff",
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 40,
     marginVertical: 20,
     marginHorizontal: 20,
     flexDirection: "row",
@@ -156,15 +156,16 @@ const styles = StyleSheet.create({
   },
   gridTitle: {
     position: "absolute",
-    top: -15,
+    top: -45,
     left: 10,
-    width: 150,
-    height: 40,
+    width: 300,
+    height: 60,
     backgroundColor: "#146591",
     justifyContent: "center",
     alignItems: "center",
-    borderTopLeftRadius: 6,
-    borderBottomRightRadius: 6,
+    borderRadius: 16,
+    // borderTopLeftRadius: 8,
+    // borderBottomRightRadius: 8,
     overflow: "visible",
   },
   gridText: {

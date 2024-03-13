@@ -17,7 +17,7 @@ const data = [
   {
     title: "Mes Badges",
     image: require("../../assets/badgesLogo.png"),
-    screen: "",
+    screen: "Settings",
   },
   {
     title: "Mes statistique",
@@ -77,6 +77,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 20,
     overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "#1a8cc9",
   },
   textContainer: {
     marginRight: 50,
