@@ -97,11 +97,14 @@ export default function SettingsPage({ navigation }: SettingsPageProps) {
           description="Informations sur notre organisation"
           iconName="info"
           navigation={navigation}
-          navigateTo="Apropos"
+          navigateTo="About"
         />
         <SettingItem
           title="Conditions générales d'utilisation"
+          description="Informations sur les conditions générales d'utilisateur"
           iconName="description"
+          navigation={navigation}
+          navigateTo="GeneralConditions"
         />
       </ScrollView>
       {/* TabBar */}

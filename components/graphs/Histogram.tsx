@@ -25,7 +25,7 @@ const Histogram = () => {
 
       const stepsQuery = query(
         collection(db, "steps"),
-        where("user.userId", "==", authState.userId)
+        where("userId", "==", authState.userId)
       );
 
       try {

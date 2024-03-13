@@ -33,11 +33,15 @@ export default function AboutPage({ navigation }: AboutPageProps) {
             source={require("../../assets/step1.png")}
             style={styles.logo}
           />
-          <Text style={styles.title}>C.H.U Rouen</Text>
+          <Text style={styles.title}>StepCHU</Text>
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.bodyText}>
-            Accedent enim eius asperitati, ubi inminuta vel...
+            STEP CHU est une application mobile accompagnant le projet 10.000
+            pas du CHU de Rouen. Développée en collaboration avec le CESI de
+            Rouen, cette application a été dans un premier temps à projet
+            pédagogique ayant un but réel étant de collaborer avec le CHU de
+            Rouen pour faire une nouvelle édition de leur projet.
           </Text>
         </View>
         <View style={styles.headerContainer1}>
@@ -49,7 +53,11 @@ export default function AboutPage({ navigation }: AboutPageProps) {
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.bodyText}>
-            Accedent enim eius asperitati, ubi inminuta vel...
+            Le CHU de Rouen comprend 5 hôpitaux, dont l'hôpital Charles Nicolle,
+            l'hôpital de Bois-Guillaume, l'hôpital Saint-Julien, l'hôpital
+            d'Oissel et l'EHPAD Boucicaut. Il emploie plus de 10 000 personnes.
+            Ses missions essentielles sont les soins, la formation, la recherche
+            et la prévention.
           </Text>
         </View>
         <View style={styles.headerContainer2}>
@@ -61,7 +69,30 @@ export default function AboutPage({ navigation }: AboutPageProps) {
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.bodyText}>
-            Accedent enim eius asperitati, ubi inminuta vel...
+            Le "DEPS" au CHU de Rouen fait référence au Département d'Éducation
+            et de Promotion de la Santé. C'est un service qui fait partie de
+            nombreux hôpitaux et centres de santé, y compris le Centre
+            Hospitalier Universitaire (CHU) de Rouen en France.
+          </Text>
+        </View>
+        <View style={styles.headerContainer1}>
+          <Image
+            source={require("../../assets/cesi.png")}
+            style={styles.logo}
+          />
+          <Text style={styles.title}>CESI de Rouen</Text>
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.bodyText}>
+            CESI a développé un modèle unique au sein de l’enseignement
+            supérieur. Elle accompagne ses étudiants dans les secteurs de
+            l’Industrie, du BTP, et de l’Informatique et du Numérique, à travers
+            son offre de formation composée de ses programmes : Grande École,
+            Grade de Licence, Professionnel Supérieur de bac +2 à bac +5,
+            Mastère Spécialisé®, Doctorat, Executive et Passerelles. Convaincue
+            de la nécessité de concilier sciences, technologies et sciences
+            humaines, CESI se distingue également par une offre de formation en
+            Ressources Humaines & Management
           </Text>
         </View>
       </ScrollView>
@@ -86,6 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     padding: 20,
+    paddingBottom: 110,
   },
   headerContainer: {
     flexDirection: "row",

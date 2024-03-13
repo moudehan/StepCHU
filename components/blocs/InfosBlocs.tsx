@@ -22,7 +22,7 @@ const InfoBlocks = ({ currentStepCount }: InfoBlocksProps) => {
           <Text style={styles.gridText}>Distance</Text>
         </View>
         <View style={styles.content}>
-          <Icon2 name="location" size={20} color="#FFBB00" />
+          <Icon2 name="location" size={20} color="#FFFFFF" />
           <Text style={styles.blockTitle}>{distance.toFixed(2)} KM</Text>
         </View>
       </View>
@@ -31,7 +31,7 @@ const InfoBlocks = ({ currentStepCount }: InfoBlocksProps) => {
           <Text style={styles.gridText}>Calories</Text>
         </View>
         <View style={styles.content}>
-          <Icon name="fire" size={30} color="red" />
+          <Icon name="fire" size={30} color="#FFFFFF" />
           <Text style={styles.blockTitle}>{calories.toFixed(2)}</Text>
         </View>
       </View>

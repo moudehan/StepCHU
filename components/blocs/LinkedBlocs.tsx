@@ -31,14 +31,11 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
   }, []);
 
   const handlePress = (newsletterId: string) => {
-    navigation.navigate("Actualites", { id: newsletterId });
+    navigation.navigate("Newsletter", { id: newsletterId });
   };
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Actualités</Text>
-      </View>
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -54,7 +51,7 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
               <Text style={styles.title}>{item.name}</Text>
               <Text style={styles.description}>
                 {item.description.length > 30
-                  ? `${item.description.substring(0, 40)}...`
+                  ? `${item.description}`
                   : item.description}
               </Text>
             </View>
@@ -73,41 +70,19 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
-  headerContainer: {
-    backgroundColor: "#FFBB00",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    width: 150,
-    height: 50,
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
-    marginLeft: 10,
-    marginRight: -20,
-    marginTop: 0,
-    elevation: 6,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    zIndex: 1,
-  },
-  headerTitle: {
-    color: "#FFF",
-    fontWeight: "bold",
-    fontSize: 18,
-  },
+
   scrollContainer: {
     flexGrow: 0,
-    marginTop: 10,
+    marginTop: 0,
   },
   block: {
     backgroundColor: "white",
     borderRadius: 10,
     marginHorizontal: 10,
     overflow: "hidden",
-    width: 250,
+    width: 350,
     height: 120,
     flexDirection: "row",
     alignItems: "center",
@@ -119,12 +94,13 @@ const styles = StyleSheet.create({
   textContainer: {
     backgroundColor: "#FFF",
     padding: 10,
-    width: "50%",
+    width: "75%",
+    height: "100%",
     justifyContent: "center",
     zIndex: 1,
   },
   title: {
-    color: "#000",
+    color: "#146591",
     fontWeight: "bold",
     fontSize: 16,
   },
@@ -133,14 +109,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   imageContainer: {
-    width: "50%",
+    width: "25%",
     height: "100%",
     overflow: "hidden",
   },
   image: {
     width: "100%",
     height: "100%",
-    resizeMode: "cover",
   },
 });
 export default LinkedBlocks;

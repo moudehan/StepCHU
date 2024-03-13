@@ -50,7 +50,7 @@ const StepHistorical: React.FC = () => {
     const fetchSteps = async () => {
       const stepsQuery = query(
         collection(db, "steps"),
-        where("user.userId", "==", authState.userId)
+        where("userId", "==", authState.userId)
       );
       const querySnapshot = await getDocs(stepsQuery);
       let stepsData: number[] = [];
