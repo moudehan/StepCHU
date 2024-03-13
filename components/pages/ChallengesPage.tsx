@@ -12,8 +12,8 @@ interface ChallengesPageProps {
 }
 
 interface EventTypes {
-    id: string;
-    name: string;
+  id: string;
+  name: string;
 }
 
 interface Challenges {
@@ -30,26 +30,27 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
   const [challenges, setChallenges] = useState<Challenges[]>([]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => { });
-    const fetchChallenges = async () => {
-      const querySnapshot = await getDocs(collection(db, "events"));
-      const challengesData = querySnapshot.docs.map(async (doc) => {
-        const data = doc.data();
-        const typeDoc = await getDoc(data.type);
-        const typeData = typeDoc.data() as EventTypes;
-        return {
-          id: doc.id,
-          title: data.title,
-          start: data.start,
-          end: data.end,
-          quantity: data.quantity,
-          type: typeData.name
-        };
-      });
-      const resolvedChallenges = await Promise.all(challengesData);
-      setChallenges(resolvedChallenges);
-    };
-    fetchChallenges();
+    const unsubscribe = navigation.addListener("focus", () => {
+      const fetchChallenges = async () => {
+        const querySnapshot = await getDocs(collection(db, "events"));
+        const challengesData = querySnapshot.docs.map(async (doc) => {
+          const data = doc.data();
+          const typeDoc = await getDoc(data.type);
+          const typeData = typeDoc.data() as EventTypes;
+          return {
+            id: doc.id,
+            title: data.title,
+            start: data.start,
+            end: data.end,
+            quantity: data.quantity,
+            type: typeData.name,
+          };
+        });
+        const resolvedChallenges = await Promise.all(challengesData);
+        setChallenges(resolvedChallenges);
+      };
+      fetchChallenges();
+    });
     return unsubscribe;
   }, [navigation]);
 
@@ -66,8 +67,17 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
       <FlatList
         data={challenges}
         extraData={challenges}
-        renderItem={({ item }) => <ChallengeBlocs title={item.title} quantity={item.quantity} type={item.type} start={item.start} end={item.end}/>}
-        ItemSeparatorComponent={ChallengeLineSeparator}/>
+        renderItem={({ item }) => (
+          <ChallengeBlocs
+            title={item.title}
+            quantity={item.quantity}
+            type={item.type}
+            start={item.start}
+            end={item.end}
+          />
+        )}
+        ItemSeparatorComponent={ChallengeLineSeparator}
+      />
 
       {/* TabBar */}
       <TabBar
@@ -76,7 +86,7 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
         navigation={navigation}
       />
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

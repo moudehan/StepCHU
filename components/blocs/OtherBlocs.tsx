@@ -12,7 +12,7 @@ const data = [
   {
     title: "Quiz",
     image: require("../../assets/quizLogo.png"),
-    screen: "Settings",
+    screen: "Quiz",
   },
   {
     title: "Mes Badges",

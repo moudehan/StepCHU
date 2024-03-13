@@ -53,7 +53,7 @@ export default function ChallengeBlocs({
       const userData = (await getDoc(userDocRef)).data();
 
       let steps: number = 0;
-      let quizz: number = userData?.quiz?.length;
+      let quizz: number = userData?.quiz?.length | 0;
       const stepsQuery = query(
         collection(db, "steps"),
         where("user.userId", "==", authState.userId)
