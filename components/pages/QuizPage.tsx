@@ -93,40 +93,48 @@ export default function QuizPage({ navigation }: NewsPageProps) {
   const [doneQuiz, setDoneQuiz] = useState<Quiz[]>([]);
 
   useEffect(() => {
-    const fetchQuiz = async () => {
-      // const querySnapshot = await getDocs(collection(db, "badges"));
-      const userDocRef = doc(db, "utilisateurs", authState.userId!);
-      const allQuiz = await getDocs(query(collection(db, "quizzes")));
-      const userData = (await getDoc(userDocRef)).data();
-
-      const quiz: any = [];
-      const quizDone: any = [];
-
-      if (userData?.quiz) {
-        await userData?.quiz?.forEach(async (userQuiz: any) => {
-          const quizDocRef = doc(db, "quizzes", userQuiz);
-          const quizDoc = await getDoc(quizDocRef);
-
-          allQuiz.forEach((doc) => {
-            if (quizDoc.id != doc.id) {
-              quiz.push({ id: doc.id, ...doc.data() });
-            } else {
-              quizDone.push({ id: doc.id, ...doc.data() });
-            }
+    const unsubscribe = navigation.addListener('focus', () => {
+      const fetchQuiz = async () => {
+        // const querySnapshot = await getDocs(collection(db, "badges"));
+  
+        const userDocRef = doc(db, "utilisateurs", authState.userId!);
+        const allQuiz = await getDocs(query(collection(db, "quizzes")));
+        const userData = (await getDoc(userDocRef)).data();
+  
+        const quiz: any = [];
+        const quizDone: any = [];
+  
+        if (userData?.quiz) {
+          await userData?.quiz.forEach(async (userQuiz: any) => {
+            const quizDocRef = doc(db, "quizzes", userQuiz);
+            const quizDoc = await getDoc(quizDocRef);
+  
+            allQuiz.forEach((doc) => {
+              if (quizDoc.id != doc.id) {
+                console.log("not done");
+  
+                quiz.push({ id: doc.id, ...doc.data() });
+              } else {
+                console.log("done");
+  
+                quizDone.push({ id: doc.id, ...doc.data() });
+              }
+            });
+            setQuiz(quiz);
+            setDoneQuiz(quizDone);
           });
-        });
-        setQuiz(quiz);
-        setDoneQuiz(quizDone);
-      } else {
-        allQuiz.forEach((doc) => {
-          quiz.push({ id: doc.id, ...doc.data() });
-        });
+        } else {
+          allQuiz.forEach((doc) => {
+            quiz.push({ id: doc.id, ...doc.data() });
+          });
+          setQuiz(quiz);
+        }
+      };
+      fetchQuiz();        
+    });
 
-        setQuiz(quiz);
-      }
-    };
-    fetchQuiz();
-  }, []);
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
