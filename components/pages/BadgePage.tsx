@@ -102,35 +102,33 @@ export default function BadgePage({ navigation }: NewsPageProps) {
         paramBack={true}
       />
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <View style={styles.gridContainer}>
+        <View style={styles.badges}>
           {badges.map((badge, index) => (
-            <View key={index} style={[styles.gridItem]}>
-              <Image
-                source={{ uri: getBadgeColor(badge).image }}
-                height={101}
-                width={79}
-              />
-              <Text style={styles.gridTextTitle}>{badge.name}</Text>
-              <View
-                style={{
-                  height: 40,
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <Text style={styles.gridTextDescription}>
-                  {badge.description}
-                </Text>
+            <View key={badge.id} style={[styles.shadowBorderContainer]}>
+              <View key={badge.id} style={[styles.badge]}>
+                <Image
+                  source={{ uri: getBadgeColor(badge).image }}
+                  height={101}
+                  width={79}
+                />
+                <View style={styles.badgeText}>
+                  <Text style={styles.badgeTitle}>{badge.name}</Text>
+                  <Text style={styles.badgeDescription}>
+                    {badge.description}
+                  </Text>
+                  <Text style={styles.gridTextDescription}>
+                    {badge.points} points restants
+                  </Text>
+                  <Progress.Bar
+                    progress={
+                      (badge.points ?? 0) / getBadgeColor(badge).maxPoints
+                    }
+                    width={Dimensions.get("window").width * 0.7 - 40}
+                    height={10}
+                    color="#146591"
+                  />
+                </View>
               </View>
-              <Progress.Bar
-                progress={(badge.points ?? 0) / getBadgeColor(badge).maxPoints}
-                width={79}
-                height={10}
-                color="#E26C61"
-              />
-              <Text style={styles.gridTextDescription}>
-                {badge.points} / {getBadgeColor(badge).maxPoints}
-              </Text>
             </View>
           ))}
         </View>
@@ -146,6 +144,25 @@ export default function BadgePage({ navigation }: NewsPageProps) {
 }
 
 const styles = StyleSheet.create({
+  shadowBorderContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 10,
+    // marginBottom: 20,
+    // marginVertical: 20,
+    marginHorizontal: 5,
+    width: Dimensions.get("window").width * 0.9,
+    flexDirection: "row",
+    // marginHorizontal: 7,
+    justifyContent: "space-between",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
   safeArea: {
     flex: 1,
     backgroundColor: "#f2f2f2",
@@ -157,28 +174,36 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
-  gridContainer: {
-    flexDirection: "row",
+  badges: {
+    flexDirection: "column",
     flexWrap: "wrap",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-    marginVertical: 20,
-    marginBottom: 10,
+    justifyContent: "center",
+    gap: 30,
+    paddingTop: 25,
   },
-  gridItem: {
-    width: Dimensions.get("window").width / nbItemsInRow - 10,
-    height: Dimensions.get("window").width / nbItemsInRow + 70,
-    borderRadius: 10,
-    marginBottom: 10,
-    justifyContent: "flex-end",
-    alignItems: "center",
+  badge: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
   },
-  gridTextTitle: {
+  badgeText: {
+    width: "70%",
+    display: "flex",
+    flexDirection: "column",
+    marginLeft: 15,
+    alignItems: "flex-start",
+    justifyContent: "space-evenly",
+  },
+  badgeTitle: {
+    fontSize: 18,
     fontWeight: "bold",
-    fontSize: 15,
+  },
+  badgeDescription: {
+    fontSize: 14,
   },
   gridTextDescription: {
     fontSize: 12,
     textAlign: "center",
+    width: "100%",
   },
 });
