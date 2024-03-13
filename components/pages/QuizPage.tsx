@@ -12,72 +12,121 @@ import {
 import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
 import { useAuth } from "../../AuthContext";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
+import Badge from "../../types/Badge";
 
 interface NewsPageProps {
   navigation: any;
   route?: any;
 }
 
-const QuizDebloques = [
-  {
-    id: 1,
-    name: "Quiz 1",
-    description: "20 questions",
-  },
-  {
-    id: 2,
-    name: "Quiz 2",
-    description: "20 questions",
-  },
-];
+interface Quiz {
+  id: string;
+  title: string;
+  badge: Badge;
+  description: string;
+  questions: Question[];
+}
 
-const QuizNonDebloques = [
-  {
-    id: 3,
-    name: "Quiz 3",
-    description: "20 questions",
-  },
-  {
-    id: 4,
-    name: "Quiz 4",
-    description: "20 questions",
-  },
-];
+interface Question {
+  id: string;
+  text: string;
+  answers: Answer[];
+  point: Point;
+}
 
-const QuizTermines = [
-  {
-    id: 5,
-    name: "Quiz 5",
-    description: "20 questions",
-  },
-  {
-    id: 6,
-    name: "Quiz 6",
-    description: "20 questions",
-  },
-];
+interface Answer {
+  id: string;
+  isCorrect: boolean;
+  text: string;
+}
+
+interface Point {
+  id: string;
+  name: string;
+  number: number;
+}
+
+// const QuizDebloques = [
+//   {
+//     id: 1,
+//     name: "Quiz 1",
+//     description: "20 questions",
+//   },
+//   {
+//     id: 2,
+//     name: "Quiz 2",
+//     description: "20 questions",
+//   },
+// ];
+
+// const QuizNonDebloques = [
+//   {
+//     id: 3,
+//     name: "Quiz 3",
+//     description: "20 questions",
+//   },
+//   {
+//     id: 4,
+//     name: "Quiz 4",
+//     description: "20 questions",
+//   },
+// ];
+
+// const QuizTermines = [
+//   {
+//     id: 5,
+//     name: "Quiz 5",
+//     description: "20 questions",
+//   },
+//   {
+//     id: 6,
+//     name: "Quiz 6",
+//     description: "20 questions",
+//   },
+// ];
 
 export default function QuizPage({ navigation }: NewsPageProps) {
-  // const { userId } = useAuth();
-  const [quiz, setQuiz] = useState([]);
+  const { authState } = useAuth();
+  const [quiz, setQuiz] = useState<Quiz[]>([]);
+  const [doneQuiz, setDoneQuiz] = useState<Quiz[]>([]);
 
   useEffect(() => {
     const fetchQuiz = async () => {
       // const querySnapshot = await getDocs(collection(db, "badges"));
-      const querySnapshot = await getDocs(query(collection(db, "quizzes")));
-      // console.log(querySnapshot);
-      let quiz = [];
-      querySnapshot.forEach((doc) => {
-        quiz.push({ id: doc.id, ...doc.data() });
-      });
-      setQuiz(quiz);
+      const userDocRef = doc(db, "utilisateurs", authState.userId!);
+      const allQuiz = await getDocs(query(collection(db, "quizzes")));
+      const userData = (await getDoc(userDocRef)).data();
+
+      const quiz: any = [];
+      const quizDone: any = [];
+
+      if (userData?.quiz) {
+        await userData?.quiz?.forEach(async (userQuiz: any) => {
+          const quizDocRef = doc(db, "quizzes", userQuiz);
+          const quizDoc = await getDoc(quizDocRef);
+
+          allQuiz.forEach((doc) => {
+            if (quizDoc.id != doc.id) {
+              quiz.push({ id: doc.id, ...doc.data() });
+            } else {
+              quizDone.push({ id: doc.id, ...doc.data() });
+            }
+          });
+        });
+        setQuiz(quiz);
+        setDoneQuiz(quizDone);
+      } else {
+        allQuiz.forEach((doc) => {
+          quiz.push({ id: doc.id, ...doc.data() });
+        });
+
+        setQuiz(quiz);
+      }
     };
     fetchQuiz();
   }, []);
-
-  // console.log(quiz[0].title);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -108,30 +157,19 @@ export default function QuizPage({ navigation }: NewsPageProps) {
         </View>
         <Text style={styles.title}>Quiz non débloqués</Text>
         <View style={{ display: "flex", gap: 20, marginBottom: 15 }}>
-          {QuizNonDebloques.map((quiz) => (
-            <View
-              key={quiz.id}
-              style={{ display: "flex", flexDirection: "row", gap: 5 }}
-            >
-              <Image source={require("../../assets/quizIcon.png")} />
-              <View style={{ width: "70%" }}>
-                <Text style={styles.titleQuiz}>{quiz.name}</Text>
-                <Text>{quiz.description}</Text>
-              </View>
-              <Image source={require("../../assets/lockIcon.png")} />
-            </View>
-          ))}
+          {/* TODO QUIZZ LOCK  */}
         </View>
         <Text style={styles.title}>Quiz terminés</Text>
         <View style={{ display: "flex", gap: 20, marginBottom: 15 }}>
-          {QuizTermines.map((quiz) => (
+          {/* TODO QUIZZ DONE  */}
+          {doneQuiz.map((quiz) => (
             <View
               key={quiz.id}
               style={{ display: "flex", flexDirection: "row", gap: 5 }}
             >
               <Image source={require("../../assets/quizIcon.png")} />
               <View style={{ width: "70%" }}>
-                <Text style={styles.titleQuiz}>{quiz.name}</Text>
+                <Text style={styles.titleQuiz}>{quiz.title}</Text>
                 <Text>{quiz.description}</Text>
               </View>
               <Image source={require("../../assets/checkIcon.png")} />
@@ -168,120 +206,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
 });
-
-// import React, { useState } from "react";
-// import {
-//   StyleSheet,
-//   SafeAreaView,
-//   Text,
-//   View,
-//   Dimensions,
-//   ScrollView,
-//   Image,
-//   FlatList,
-// } from "react-native";
-
-// import NavBar from "../navDrawer/NavBar";
-// import TabBar from "../navDrawer/TabBar";
-
-// interface QuizPageProps {
-//   navigation: any;
-//   route?: any;
-// }
-
-// const nbItemsInRow = 2;
-
-// interface QuizItem {
-//   id: number;
-//   title: string;
-//   description: string;
-//   image: string;
-// }
-
-// export default function QuizPage({ navigation }: QuizPageProps) {
-//   const [dataSource, setDataSource] = useState<QuizItem[]>([]);
-
-//   useState(() => {
-//     let items: QuizItem[] = Array.apply(null, Array(60)).map((v, i) => {
-//       return {
-//         id: i,
-//         title: "Quiz " + (i + 1),
-//         description: "Description du quiz " + (i + 1),
-//         image: "http://placehold.it/200x200?text=" + (i + 1),
-//       };
-//     });
-//     setDataSource(items);
-//   }, []);
-
-//   return (
-//     <SafeAreaView style={styles.safeArea}>
-//       <NavBar
-//         paramIcon={false}
-//         title="Quiz"
-//         navigation={navigation}
-//         paramBack={true}
-//       />
-//       <ScrollView style={styles.scrollView}>
-//         <Text style={styles.title}>Quiz débloqués</Text>
-//         <FlatList
-//           data={dataSource}
-//           renderItem={({ item }) => (
-//             <View style={styles.quizItemContainer}>
-//               <Image
-//                 style={styles.quizItemImage}
-//                 source={{ uri: item.image }}
-//               />
-//               <Text style={styles.quizItemTitle}>{item.title}</Text>
-//               <Text style={styles.quizItemDescription}>{item.description}</Text>
-//             </View>
-//           )}
-//           //Setting the number of column
-//           numColumns={nbItemsInRow}
-//           keyExtractor={(item) => item.id.toString()}
-//         />
-//         <Text style={styles.title}>Quiz non débloqués</Text>
-//         <Text style={styles.title}>Quiz terminés</Text>
-//       </ScrollView>
-//       <TabBar
-//         activeTab="home"
-//         setActiveTab={() => {}}
-//         navigation={navigation}
-//       />
-//     </SafeAreaView>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   safeArea: {
-//     flex: 1,
-//     backgroundColor: "#f2f2f2",
-//   },
-//   title: {
-//     fontSize: 20,
-//     fontWeight: "bold",
-//   },
-//   scrollView: {
-//     flex: 1,
-//     marginHorizontal: 20,
-//   },
-//   quizItemContainer: {
-//     flex: 1,
-//     flexDirection: "column",
-//     margin: 1,
-//     alignItems: "center",
-//   },
-//   quizItemImage: {
-//     justifyContent: "center",
-//     alignItems: "center",
-//     height: 100,
-//   },
-//   quizItemTitle: {
-//     fontSize: 16,
-//     fontWeight: "bold",
-//     marginTop: 8,
-//   },
-//   quizItemDescription: {
-//     fontSize: 14,
-//     marginTop: 4,
-//   },
-// });

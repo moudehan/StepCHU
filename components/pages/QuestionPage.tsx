@@ -270,12 +270,10 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
                 marginTop: 20,
               }}
               onPress={async () => {
-                //TODO update the user by adding the quizz in it
                 const userDocRef = doc(db, "utilisateurs", authState.userId!);
                 const userDocData = (await getDoc(userDocRef)).data()
-                const quizDocRef = doc(db, "quiz", quiz.id);
 
-                await updateDoc(userDocRef, userDocData?.quiz ? { quiz: [...userDocData?.quiz, quizDocRef] }: { quiz: [quizDocRef] });
+                await updateDoc(userDocRef, userDocData?.quiz ? { quiz: [...userDocData?.quiz, quiz.id] }: { quiz: [quiz.id] });
 
                 navigation.navigate("Quiz");
               }}
