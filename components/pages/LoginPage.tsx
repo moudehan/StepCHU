@@ -32,6 +32,7 @@ import { JSHash, CONSTANTS } from "react-native-hash";
 import { fetchSecurityQuestions } from "../services/SecurityQuestions";
 import { SecurityQuestion } from "../../types/SecurityQuestionTypes";
 import { UserType } from "../../types/UserType";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 interface LoginPageProps {
   navigation: any;
@@ -51,6 +52,8 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
   >([]);
   const [password, setPassword] = useState("");
   const { setAuthState } = useAuth();
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordVisible1, setPasswordVisible1] = useState(false);
 
   useEffect(() => {
     const loadSecurityQuestions = async () => {
@@ -68,6 +71,8 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
     setConfirmationPassword("");
     setPassword("");
     setIsUserDataLoaded(false);
+    setPasswordVisible(false);
+    setPasswordVisible1(false);
   };
 
   useFocusEffect(
@@ -79,6 +84,8 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       setConfirmationPassword("");
       setPassword("");
       setIsUserDataLoaded(false);
+      setPasswordVisible(false);
+      setPasswordVisible1(false);
     }, [])
   );
 
@@ -245,23 +252,43 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
         </View>
         {isUserDataLoaded && !securityQuestion && (
           <>
-            <View style={styles.inputContainer}>
+            <View style={{ ...styles.inputContainer, marginTop: 20 }}>
               <TextInput
                 style={styles.input}
                 onChangeText={setPassword}
                 value={password}
-                placeholder="Entrez votre mot de passe"
+                placeholder="Mot de passe"
                 placeholderTextColor="#B0E0E6"
+                secureTextEntry={!passwordVisible}
               />
+              <TouchableOpacity
+                onPress={() => setPasswordVisible(!passwordVisible)}
+              >
+                <Icon
+                  name={passwordVisible ? "eye-slash" : "eye"}
+                  size={20}
+                  color="#10669D"
+                />
+              </TouchableOpacity>
             </View>
-            <View style={styles.inputContainer}>
+            <View style={{ ...styles.inputContainer, marginBottom: 20 }}>
               <TextInput
                 style={styles.input}
                 onChangeText={setConfirmationPassword}
                 value={confirmationPassword}
-                placeholder="Entrez votre réponse"
+                placeholder="Confirmation mot de passe"
                 placeholderTextColor="#B0E0E6"
+                secureTextEntry={!passwordVisible1}
               />
+              <TouchableOpacity
+                onPress={() => setPasswordVisible1(!passwordVisible1)}
+              >
+                <Icon
+                  name={passwordVisible1 ? "eye-slash" : "eye"}
+                  size={20}
+                  color="#10669D"
+                />
+              </TouchableOpacity>
             </View>
             {customError !== "" && (
               <Text style={styles.errorText}>{customError}</Text>
@@ -277,14 +304,24 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
         {isUserDataLoaded || !deviceUUID ? (
           securityQuestion && (
             <>
-              <View style={styles.inputContainer}>
+              <View style={{ ...styles.inputContainer, marginVertical: 20 }}>
                 <TextInput
-                  style={styles.input1}
+                  style={styles.input}
                   onChangeText={setPassword}
                   value={password}
-                  placeholder="Entrez votre réponse"
+                  placeholder="Mot de passe"
                   placeholderTextColor="#B0E0E6"
+                  secureTextEntry={!passwordVisible}
                 />
+                <TouchableOpacity
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                >
+                  <Icon
+                    name={passwordVisible ? "eye-slash" : "eye"}
+                    size={20}
+                    color="#10669D"
+                  />
+                </TouchableOpacity>
               </View>
 
               {customError !== "" && (
