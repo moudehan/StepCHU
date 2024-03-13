@@ -4,6 +4,8 @@ import * as Progress from "react-native-progress";
 import {
   Timestamp,
   collection,
+  doc,
+  getDoc,
   getDocs,
   query,
   where,
@@ -28,6 +30,7 @@ export default function ChallengeBlocs({
 }: ChallengeBlocsProps) {
   const { authState } = useAuth();
   const [stepsData, setStepsData] = useState(0);
+  const [quizNumber, setQuizzNumber] = useState(0);
   const [today, setToday] = useState(new Date());
   const months = [
     "Janvier",
@@ -46,7 +49,11 @@ export default function ChallengeBlocs({
 
   useEffect(() => {
     const fetchSteps = async () => {
+      const userDocRef = doc(db, "utilisateurs", authState.userId!);
+      const userData = (await getDoc(userDocRef)).data();
+
       let steps: number = 0;
+      let quizz: number = userData?.quiz?.length;
       const stepsQuery = query(
         collection(db, "steps"),
         where("user.userId", "==", authState.userId)
@@ -64,6 +71,7 @@ export default function ChallengeBlocs({
         }
       });
       setStepsData(steps);
+      setQuizzNumber(quizz);
     };
 
     fetchSteps();
@@ -84,22 +92,44 @@ export default function ChallengeBlocs({
       </View>
 
       <View>
-        <Text style={Styles.objectiveSteps}>
-          {stepsData}/{quantity}
-        </Text>
-      </View>
-
-      {start.toDate().setUTCHours(0, 0, 0, 0) <=
-        today.setUTCHours(0, 0, 0, 0) &&
-        end.toDate().setUTCHours(0, 0, 0, 0) >=
-          today.setUTCHours(0, 0, 0, 0) && (
-          <Progress.Bar
-            progress={(stepsData/quantity)}
-            width={null}
-            height={10}
-            color="#E26C61"
-          />
+        {type == "steps" && (
+          <View>
+            <Text style={Styles.objectiveSteps}>
+              {stepsData}/{quantity}
+            </Text>
+            {start.toDate().setUTCHours(0, 0, 0, 0) <=
+              today.setUTCHours(0, 0, 0, 0) &&
+              end.toDate().setUTCHours(0, 0, 0, 0) >=
+                today.setUTCHours(0, 0, 0, 0) && (
+                <Progress.Bar
+                  progress={stepsData / quantity}
+                  width={null}
+                  height={10}
+                  color="#E26C61"
+                />
+              )}
+          </View>
         )}
+        {type == "quiz" && (
+          <View>
+            <Text style={Styles.objectiveSteps}>
+              {quizNumber}/{quantity}
+            </Text>
+
+            {start.toDate().setUTCHours(0, 0, 0, 0) <=
+              today.setUTCHours(0, 0, 0, 0) &&
+              end.toDate().setUTCHours(0, 0, 0, 0) >=
+                today.setUTCHours(0, 0, 0, 0) && (
+                <Progress.Bar
+                  progress={quizNumber / quantity}
+                  width={null}
+                  height={10}
+                  color="#E26C61"
+                />
+              )}
+          </View>
+        )}
+      </View>
 
       {start.toDate().setUTCHours(0, 0, 0, 0) >
         today.setUTCHours(0, 0, 0, 0) && (
@@ -132,6 +162,6 @@ const Styles = StyleSheet.create({
     padding: 10,
   },
   objectiveSteps: {
-    color: "grey"
-  }
+    color: "grey",
+  },
 });
