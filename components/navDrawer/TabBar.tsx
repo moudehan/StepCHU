@@ -16,9 +16,9 @@ const TabBar: React.FC<TabBarProps> = ({
   const tabIcons = [
     {
       name: "news",
-      label: "Actualités",
+      label: "Newsletter",
       icon: "globe-outline",
-      screen: "Actualites",
+      screen: "Newsletter",
     },
     {
       name: "challenges",

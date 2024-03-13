@@ -42,14 +42,14 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
   const [userName, setUserName] = useState("");
   const [customError, setCustomError] = useState("");
   const [securityQuestion, setSecurityQuestion] = useState("");
-  const [securityAnswer, setSecurityAnswer] = useState("");
+  const [confirmationPassword, setConfirmationPassword] = useState("");
   const [isUserDataLoaded, setIsUserDataLoaded] = useState(false);
   const [deviceUUID, setDeviceUUID] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [securityQuestions, setSecurityQuestions] = useState<
     SecurityQuestion[]
   >([]);
-  const [selectedQuestion, setSelectedQuestion] = useState("");
+  const [password, setPassword] = useState("");
   const { setAuthState } = useAuth();
 
   useEffect(() => {
@@ -65,7 +65,8 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
     setUserName("");
     setCustomError("");
     setSecurityQuestion("");
-    setSecurityAnswer("");
+    setConfirmationPassword("");
+    setPassword("");
     setIsUserDataLoaded(false);
   };
 
@@ -75,7 +76,8 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       setUserName("");
       setCustomError("");
       setSecurityQuestion("");
-      setSecurityAnswer("");
+      setConfirmationPassword("");
+      setPassword("");
       setIsUserDataLoaded(false);
     }, [])
   );
@@ -94,17 +96,31 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
   }, []);
 
   const handleSecurityQuestionUpdate = async () => {
-    if (selectedQuestion && securityAnswer && userId) {
+    if (!password && !confirmationPassword) {
+      setCustomError("Veuillez saisir un mot de passe.");
+      return;
+    }
+    if (password && !confirmationPassword) {
+      setCustomError("Veuillez confirmer votre mot de passe");
+      return;
+    }
+    if (password && confirmationPassword && userId) {
+      if (password !== confirmationPassword) {
+        setCustomError("Les mots de passe ne sont pas identiques.");
+        return;
+      }
+
       const userDocRef = doc(db, "utilisateurs", userId);
       const hashedAnswer = await JSHash(
-        securityAnswer,
+        confirmationPassword,
         CONSTANTS.HashAlgorithms.sha256
       );
+
       try {
         await updateDoc(userDocRef, {
-          securityQuestion: selectedQuestion,
-          securityAnswer: hashedAnswer,
+          password: hashedAnswer,
         });
+        await AsyncStorage.setItem("Authenticate", "true");
         navigation.navigate("home");
       } catch (error) {
         setCustomError("Erreur lors de la mise à jour. Veuillez réessayer.");
@@ -115,7 +131,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
   const handleLogin = async () => {
     setCustomError("");
     if (!userName) {
-      setCustomError("Veuillez entrer votre Nom d'utilisateur.");
+      setCustomError("Veuillez entrer votre Identifiant.");
       return;
     }
     setIsLoading(true);
@@ -138,7 +154,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
           if (!userData.phoneId || userData.phoneId === deviceUUID) {
             handlePostLogin(userData);
           } else {
-            setSecurityQuestion(userData.securityQuestion);
+            setSecurityQuestion(userData.password);
             setIsUserDataLoaded(true);
           }
         } else {
@@ -155,10 +171,10 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
   };
 
   const handlePostLogin = (userData: any) => {
-    if (!userData.securityQuestion) {
+    if (!userData.password) {
       setIsUserDataLoaded(true);
     } else {
-      setSecurityQuestion(userData.securityQuestion);
+      setSecurityQuestion(userData.password);
       setIsUserDataLoaded(true);
     }
   };
@@ -181,18 +197,19 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
 
       const userData = userDocSnap.data();
       const hashedAnswerInput = await JSHash(
-        securityAnswer,
+        password,
         CONSTANTS.HashAlgorithms.sha256
       );
 
-      if (hashedAnswerInput === userData.securityAnswer) {
+      if (hashedAnswerInput === userData.password) {
         await updateDoc(userDocRef, { phoneId: deviceUUID });
         await AsyncStorage.setItem("userId", userId);
         await AsyncStorage.setItem("user", JSON.stringify(userData));
         await AsyncStorage.setItem("phoneId", deviceUUID);
+        await AsyncStorage.setItem("Authenticate", "true");
         navigation.navigate("home");
       } else {
-        setCustomError("Réponse de sécurité incorrecte");
+        setCustomError("Mot de passe incorrecte");
       }
     } catch (error) {
       console.error("Erreur lors de la tentative de vérification :", error);
@@ -228,48 +245,27 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
         </View>
         {isUserDataLoaded && !securityQuestion && (
           <>
-            <View style={styles.selectStyle}>
-              <SelectList
-                setSelected={(val: any) => setSelectedQuestion(val)}
-                data={securityQuestions.map((question) => ({
-                  key: question.id,
-                  value: question.name,
-                }))}
-                save="value"
-                placeholder="Sélectionnez une question..."
-                searchPlaceholder="Chercher une question"
-                boxStyles={{
-                  borderWidth: 1,
-                  borderColor: "#B0E0E6",
-                  borderRadius: 25,
-                  width: 270,
-                  marginTop: 5,
-                  marginBottom: 10,
-                }}
-                inputStyles={{
-                  color: "#10669D",
-                }}
-                dropdownStyles={{
-                  borderWidth: 1,
-                  borderColor: "#B0E0E6",
-                  borderRadius: 25,
-                  marginTop: 0,
-                  marginBottom: 10,
-                }}
-                dropdownTextStyles={{
-                  color: "#10669D",
-                }}
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setPassword}
+                value={password}
+                placeholder="Entrez votre mot de passe"
+                placeholderTextColor="#B0E0E6"
               />
             </View>
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
-                onChangeText={setSecurityAnswer}
-                value={securityAnswer}
+                onChangeText={setConfirmationPassword}
+                value={confirmationPassword}
                 placeholder="Entrez votre réponse"
                 placeholderTextColor="#B0E0E6"
               />
             </View>
+            {customError !== "" && (
+              <Text style={styles.errorText}>{customError}</Text>
+            )}
             <TouchableOpacity
               style={styles.button}
               onPress={handleSecurityQuestionUpdate}
@@ -281,18 +277,11 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
         {isUserDataLoaded || !deviceUUID ? (
           securityQuestion && (
             <>
-              <Text style={styles.securityQuestion}>
-                Question secrète :{" "}
-                <Text style={styles.securityQuestion1}>
-                  {" "}
-                  {securityQuestion}
-                </Text>
-              </Text>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input1}
-                  onChangeText={setSecurityAnswer}
-                  value={securityAnswer}
+                  onChangeText={setPassword}
+                  value={password}
                   placeholder="Entrez votre réponse"
                   placeholderTextColor="#B0E0E6"
                 />
@@ -315,9 +304,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
               <Text style={styles.errorText}>{customError}</Text>
             )}
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>
-                Charger la question de sécurité
-              </Text>
+              <Text style={styles.buttonText}>Suivant</Text>
             </TouchableOpacity>
           </>
         )}
