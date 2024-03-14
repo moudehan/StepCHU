@@ -236,18 +236,18 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
         {!isUserDataLoaded && <Text style={styles.title}>StepCHU</Text>}
 
         <View style={styles.inputContainer}>
-          <AntDesign name="user" size={24} color="#B0E0E6" />
+          <AntDesign name="user" size={24} color="#10669D" />
           <TextInput
             style={styles.input}
             onChangeText={setUserName}
             value={userName}
             placeholder="Entrez votre ID"
-            placeholderTextColor="#B0E0E6"
+            placeholderTextColor="#10669D"
             editable={!isUserDataLoaded}
           />
-          {isLoading && <ActivityIndicator size="small" color="#B0E0E6" />}
+          {isLoading && <ActivityIndicator size="small" color="#10669D" />}
           {isUserDataLoaded && (
-            <MaterialIcons name="verified-user" size={24} color="#B0E0E6" />
+            <MaterialIcons name="verified-user" size={24} color="#10669D" />
           )}
         </View>
         {isUserDataLoaded && !securityQuestion && (
@@ -258,7 +258,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
                 onChangeText={setPassword}
                 value={password}
                 placeholder="Mot de passe"
-                placeholderTextColor="#B0E0E6"
+                placeholderTextColor="#10669D"
                 secureTextEntry={!passwordVisible}
               />
               <TouchableOpacity
@@ -277,7 +277,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
                 onChangeText={setConfirmationPassword}
                 value={confirmationPassword}
                 placeholder="Confirmation mot de passe"
-                placeholderTextColor="#B0E0E6"
+                placeholderTextColor="#10669D"
                 secureTextEntry={!passwordVisible1}
               />
               <TouchableOpacity
@@ -310,7 +310,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
                   onChangeText={setPassword}
                   value={password}
                   placeholder="Mot de passe"
-                  placeholderTextColor="#B0E0E6"
+                  placeholderTextColor="#10669D"
                   secureTextEntry={!passwordVisible}
                 />
                 <TouchableOpacity
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "#B0E0E6",
+    borderColor: "#10669D",
     marginBottom: 5,
   },
   input: {

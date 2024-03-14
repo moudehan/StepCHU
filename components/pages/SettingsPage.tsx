@@ -90,7 +90,9 @@ export default function SettingsPage({ navigation }: SettingsPageProps) {
         <SettingItem
           title="Didacticiel"
           description="Découvrir l'utilisation de notre app"
+          navigation={navigation}
           iconName="school"
+          navigateTo="Tutorial"
         />
         <SettingItem
           title="À Propos"

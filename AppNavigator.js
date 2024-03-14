@@ -13,6 +13,7 @@ import BadgePage from "./components/pages/BadgePage";
 import QuizPage from "./components/pages/QuizPage";
 import QuestionPage from "./components/pages/QuestionPage";
 
+import TutorialPage from "./components/pages/TutorialPage";
 const Stack = createNativeStackNavigator();
 
 function AppNavigator({ initialRouteName }) {
@@ -31,6 +32,11 @@ function AppNavigator({ initialRouteName }) {
       <Stack.Screen
         name="Profil"
         component={ProfilPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Tutorial"
+        component={TutorialPage}
         options={{ headerShown: false }}
       />
       <Stack.Screen
