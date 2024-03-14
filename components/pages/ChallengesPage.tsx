@@ -22,6 +22,8 @@ interface EventTypes {
 }
 
 interface Challenges {
+  BadgeId: string;
+  points: number;
   id: string;
   title: string;
   start: string;
@@ -52,6 +54,8 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
           if (typeData) {
             return {
               id: doc.id,
+              BadgeId: data.BadgeId,
+              points: data.points,
               title: data.title,
               start: data.start,
               end: data.end,
@@ -97,6 +101,9 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
             type={item.type}
             start={item.start}
             end={item.end}
+            id={item.id}
+            badgeId={item.BadgeId}
+            points={item.points}
           />
         )}
         ItemSeparatorComponent={ChallengeLineSeparator}

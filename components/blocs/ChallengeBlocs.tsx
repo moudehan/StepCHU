@@ -11,8 +11,15 @@ import {
 } from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import { useAuth } from "../../AuthContext";
+import { UserType } from "../../types/UserType";
+import { updateUserChallenge } from "../services/ChallengeService";
+import { getBadgeUser, updateUserBadges } from "../services/BadgesService";
+import Badge from "../../types/Badge";
 
 interface ChallengeBlocsProps {
+  badgeId: string;
+  points: number;
+  id: string;
   title: string;
   quantity: number;
   type: {
@@ -29,6 +36,9 @@ export default function ChallengeBlocs({
   type,
   start,
   end,
+  id,
+  badgeId,
+  points,
 }: ChallengeBlocsProps) {
   const { authState } = useAuth();
   const [stepsData, setStepsData] = useState(0);
@@ -52,7 +62,7 @@ export default function ChallengeBlocs({
   useEffect(() => {
     const fetchSteps = async () => {
       const userDocRef = doc(db, "utilisateurs", authState.userId!);
-      const userData = (await getDoc(userDocRef)).data();
+      const userData = (await getDoc(userDocRef)).data() as UserType;
 
       let steps: number = 0;
       let quizz: number = userData?.quiz?.length || 0;
@@ -61,7 +71,7 @@ export default function ChallengeBlocs({
         where("userId", "==", authState.userId)
       );
       const querySnapshot = await getDocs(stepsQuery);
-      
+
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         const date = new Date(data.date);
@@ -76,6 +86,57 @@ export default function ChallengeBlocs({
           }
         }
       });
+
+      let ChallengeReussi = false;
+
+      if (type.name === "steps") {
+        if (steps >= quantity) {
+          ChallengeReussi = true;
+        }
+      } else {
+        if (quizz >= quantity) {
+          ChallengeReussi = true;
+        }
+      }
+
+      if (ChallengeReussi) {
+        if (userData.challenges) {
+          let indexChallenge = userData.challenges.findIndex(
+            (challenge) => challenge.id === id
+          );
+          if (indexChallenge === -1) {
+            updateUserChallenge(authState.userId!, [
+              ...userData.challenges,
+              { id: id, completed: true },
+            ]);
+            getBadgeUser(userData!).then((badges) => {
+              let idBadge: number = badges.findIndex(
+                (badge: Badge) => badge.id === badgeId
+              );
+              if (idBadge !== -1) {
+                badges[idBadge].points += points;
+              } else {
+                badges.push({ id: id, points: points });
+              }
+              updateUserBadges(authState.userId!, badges);
+            });
+          }
+        } else {
+          updateUserChallenge(authState.userId!, [{ id: id, completed: true }]);
+          getBadgeUser(userData!).then((badges) => {
+            let indexBadge: number = badges.findIndex(
+              (badge: Badge) => badge.id === badgeId
+            );
+            if (indexBadge !== -1) {
+              badges[indexBadge].points += points;
+            } else {
+              badges.push({ id: id, points: points });
+            }
+            updateUserBadges(authState.userId!, badges);
+          });
+        }
+      }
+
       setStepsData(steps);
       setQuizzNumber(quizz);
     };
@@ -100,9 +161,13 @@ export default function ChallengeBlocs({
       <View>
         {type.name == "steps" && (
           <View>
-            <Text style={styles.objectiveSteps}>
-              {stepsData}/{quantity}
-            </Text>
+            {stepsData >= quantity ? (
+              <Text style={styles.objectiveSteps}>Challenge réussi !</Text>
+            ) : (
+              <Text style={styles.objectiveSteps}>
+                {stepsData}/{quantity} pas
+              </Text>
+            )}
             {new Date(start).setUTCHours(0, 0, 0, 0) <=
               today.setUTCHours(0, 0, 0, 0) &&
               new Date(end).setUTCHours(0, 0, 0, 0) >=
@@ -111,16 +176,20 @@ export default function ChallengeBlocs({
                   progress={stepsData / quantity}
                   width={null}
                   height={10}
-                  color="#E26C61"
+                  color={stepsData < quantity ? "#E26C61" : "#20EBB9"}
                 />
               )}
           </View>
         )}
         {type.name == "quiz" && (
           <View>
-            <Text style={styles.objectiveSteps}>
-              {quizNumber}/{quantity}
-            </Text>
+            {quizNumber >= quantity ? (
+              <Text style={styles.objectiveSteps}>Challenge réussi !</Text>
+            ) : (
+              <Text style={styles.objectiveSteps}>
+                {quizNumber}/{quantity} quiz
+              </Text>
+            )}
 
             {new Date(start).setUTCHours(0, 0, 0, 0) <=
               today.setUTCHours(0, 0, 0, 0) &&
@@ -130,7 +199,7 @@ export default function ChallengeBlocs({
                   progress={quizNumber / quantity}
                   width={null}
                   height={10}
-                  color="#E26C61"
+                  color={quizNumber < quantity ? "#E26C61" : "#20EBB9"}
                 />
               )}
           </View>
@@ -142,7 +211,8 @@ export default function ChallengeBlocs({
         <Text style={styles.soonText}>Le challenge démarre bientôt !</Text>
       )}
 
-      {new Date(end).setUTCHours(0, 0, 0, 0) < today.setUTCHours(0, 0, 0, 0) && (
+      {new Date(end).setUTCHours(0, 0, 0, 0) <
+        today.setUTCHours(0, 0, 0, 0) && (
         <Text style={styles.soonText}>Le challenge est terminé !</Text>
       )}
     </View>
