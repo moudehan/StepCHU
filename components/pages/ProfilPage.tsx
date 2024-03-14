@@ -128,12 +128,16 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
           <Text style={styles.profileUserName}>
             utilisateur : {userData.name}
           </Text>
-          <Text style={styles.profileId}>ID : {userData.id}</Text>
+          {/* <Text style={styles.profileId}>ID : {userData.id}</Text> */}
         </View>
       </View>
 
       <View style={styles.lowerSection}>
-        <MenuItem iconName="person" text="Mon Compte" onPress={() => ""} />
+        <MenuItem
+          iconName="settings-outline"
+          text="Paramètres"
+          onPress={() => navigation.navigate("Settings")}
+        />
         <MenuItem
           iconName="medal-outline"
           text="Mes Badges"

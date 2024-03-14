@@ -17,7 +17,6 @@ import CercleProgress from "../graphs/CircularProgress";
 import { StepCounter } from "../steps/StepCounter";
 import LoadingPage from "./LoadingPage";
 import { useUserAlert } from "../Modals/AlertUserModal";
-import useBackgroundNotification from "../notificaton/stepCounterNotif";
 import TitleBlocks from "../blocs/Title";
 
 interface WelcomePageProps {
@@ -27,7 +26,7 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
   const { currentStepCount } = StepCounter();
   const [activeTab, setActiveTab] = useState("home");
   const [isLoading, setIsLoading] = useState(false);
-  useBackgroundNotification();
+  // useBackgroundNotification();
 
   useUserAlert(navigation, setIsLoading);
 
@@ -184,6 +183,7 @@ const styles = StyleSheet.create({
   },
   histogramTitle: {
     fontSize: 20,
+    fontWeight: "bold",
     color: "#146591",
     marginTop: 20,
   },

@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalTitle: {
+    color: "#146591",
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 15,
@@ -55,17 +56,17 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   buttonClose: {
-    backgroundColor: "#007bff",
+    backgroundColor: "#146591",
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
     color: "#fff",
-    marginLeft: 10,
+    marginHorizontal: "auto",
   },
 });
 
