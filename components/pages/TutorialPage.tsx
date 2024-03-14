@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, SafeAreaView, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
 
@@ -10,7 +10,7 @@ export default function TutorialPage({ navigation }: TutorialProps) {
   const [activeTab, setActiveTab] = useState("home");
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       {/* NavBar */}
       <NavBar
         paramBack
@@ -28,7 +28,7 @@ export default function TutorialPage({ navigation }: TutorialProps) {
         setActiveTab={setActiveTab}
         navigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

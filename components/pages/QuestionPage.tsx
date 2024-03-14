@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
-  Text,
   View,
+  Text,
   ScrollView,
   Image,
   TouchableOpacity,
@@ -110,7 +109,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
   }, [isClockRunning]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <NavBar
         paramIcon={false}
         title={quiz.title}
@@ -365,7 +364,7 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 

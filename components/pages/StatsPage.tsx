@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
 import TabBar from "../navDrawer/TabBar";
 import NavBar from "../navDrawer/NavBar";
 import StepHistorical from "../steps/StepHistorical";
@@ -19,7 +19,7 @@ export default function StatsPage({ navigation }: StatsPageProps) {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       {/* NavBar */}
       <NavBar
         paramBack={true}
@@ -45,7 +45,7 @@ export default function StatsPage({ navigation }: StatsPageProps) {
         setActiveTab={setActiveTab}
         navigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

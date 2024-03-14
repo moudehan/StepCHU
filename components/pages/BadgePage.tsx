@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   Text,
   View,
   ScrollView,
@@ -76,7 +75,7 @@ export default function BadgePage({ navigation }: NewsPageProps) {
   getBadgesUser();
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <NavBar
         paramIcon={false}
         title="Mes Badges"
@@ -121,7 +120,7 @@ export default function BadgePage({ navigation }: NewsPageProps) {
         setActiveTab={() => {}}
         navigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

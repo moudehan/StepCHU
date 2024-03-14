@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  BackHandler,
-} from "react-native";
+import { StyleSheet, View, Text, ScrollView, BackHandler } from "react-native";
 import TabBar from "../navDrawer/TabBar";
 import NavBar from "../navDrawer/NavBar";
 import InfoBlocks from "../blocs/InfosBlocs";
@@ -54,7 +47,7 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
     return <LoadingPage />;
   }
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       {/* NavBar */}
       <NavBar
         paramBack={false}
@@ -99,7 +92,7 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
         setActiveTab={setActiveTab}
         navigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, SafeAreaView, StyleSheet } from "react-native";
-import { collection, getDoc, getDocs, DocumentReference } from "firebase/firestore";
+import { FlatList, View, StyleSheet } from "react-native";
+import {
+  collection,
+  getDoc,
+  getDocs,
+  DocumentReference,
+} from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
@@ -39,7 +44,7 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
           if (data.type instanceof DocumentReference) {
             const typeDoc = await getDoc(data.type);
             typeData = typeDoc.data() as EventTypes;
-          } else if (typeof data.type === 'object') {
+          } else if (typeof data.type === "object") {
             typeData = data.type as EventTypes;
           } else {
             console.error("Invalid type reference:", data.type);
@@ -53,7 +58,7 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
               quantity: data.quantity,
               type: {
                 id: typeData.id,
-                name: typeData.name
+                name: typeData.name,
               },
             };
           } else {
@@ -61,7 +66,9 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
           }
         });
         const resolvedChallenges = await Promise.all(challengesData);
-        const validChallenges = resolvedChallenges.filter(challenge => challenge !== null) as Challenges[];
+        const validChallenges = resolvedChallenges.filter(
+          (challenge) => challenge !== null
+        ) as Challenges[];
         setChallenges(validChallenges);
       };
       fetchChallenges();
@@ -70,11 +77,11 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       {/* NavBar */}
       <NavBar
         paramBack={true}
-        paramIcon={true}
+        paramIcon={false}
         title="Challenges"
         navigation={navigation}
       />
@@ -84,7 +91,7 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
         extraData={challenges}
         renderItem={({ item, index }) => (
           <ChallengeBlocs
-          key={index.toString()}
+            key={index.toString()}
             title={item.title}
             quantity={item.quantity}
             type={item.type}
@@ -101,7 +108,7 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
         setActiveTab={() => setActiveTab}
         navigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

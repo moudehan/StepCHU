@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   Text,
   View,
@@ -58,7 +57,7 @@ export default function NewsPage({ navigation, route }: NewsPageProps) {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <NavBar
         paramIcon={false}
         title="Newsletter"
@@ -101,7 +100,7 @@ export default function NewsPage({ navigation, route }: NewsPageProps) {
         setActiveTab={() => {}}
         navigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

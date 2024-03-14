@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
   Image,
   Modal,
 } from "react-native";
@@ -118,7 +117,7 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
     return <LoadingPage />;
   }
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <View style={styles.upperSection}>
         {/* <Icon name="stats-chart" color="white" style={styles.editIcon} /> */}
         <View style={styles.profileSection}>
@@ -205,7 +204,7 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 

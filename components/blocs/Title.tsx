@@ -14,6 +14,7 @@ const TitleBlocks = () => {
 const styles = StyleSheet.create({
   mainContainer: {
     marginBottom: 20,
+    zIndex: 1,
   },
   headerContainer: {
     backgroundColor: "#FFBB00",
@@ -31,7 +32,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
-    zIndex: 1,
   },
   headerTitle: {
     color: "#FFF",

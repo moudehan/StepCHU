@@ -54,9 +54,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#146591",
     paddingHorizontal: 10,
     paddingTop: 35,
-    paddingBottom: 15,
-    // borderBottomLeftRadius: 10,
-    // borderBottomRightRadius: 10,
+    paddingBottom: 10,
   },
   navBarTitle: {
     color: "#DADDDD",
@@ -67,6 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 5,
+    marginVertical: 5,
   },
   iconCircle: {
     backgroundColor: "#146591",

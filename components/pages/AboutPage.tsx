@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  Image,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, View, Text, Image, ScrollView } from "react-native";
 import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
 
@@ -17,7 +10,7 @@ export default function AboutPage({ navigation }: AboutPageProps) {
   const [activeTab, setActiveTab] = useState("home");
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       {/* NavBar */}
       <NavBar
         paramBack
@@ -103,7 +96,7 @@ export default function AboutPage({ navigation }: AboutPageProps) {
         setActiveTab={setActiveTab}
         navigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

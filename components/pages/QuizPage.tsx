@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   Text,
   View,
   ScrollView,
@@ -92,7 +91,7 @@ export default function QuizPage({ navigation }: NewsPageProps) {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <NavBar
         paramIcon={false}
         title="Quiz"
@@ -100,7 +99,7 @@ export default function QuizPage({ navigation }: NewsPageProps) {
         paramBack={true}
       />
       <ScrollView style={styles.scrollView}>
-        <Text style={styles.title}>Quiz débloqués</Text>
+        <Text style={styles.title}>Quiz</Text>
         <View style={{ display: "flex", gap: 20, marginBottom: 15 }}>
           {quiz.map((quiz) => (
             <TouchableOpacity
@@ -117,10 +116,6 @@ export default function QuizPage({ navigation }: NewsPageProps) {
               </View>
             </TouchableOpacity>
           ))}
-        </View>
-        <Text style={styles.title}>Quiz non débloqués</Text>
-        <View style={{ display: "flex", gap: 20, marginBottom: 15 }}>
-          {/* TODO QUIZZ LOCK  */}
         </View>
         <Text style={styles.title}>Quiz terminés</Text>
         <View style={{ display: "flex", gap: 20, marginBottom: 15 }}>
@@ -145,7 +140,7 @@ export default function QuizPage({ navigation }: NewsPageProps) {
         setActiveTab={() => {}}
         navigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -158,6 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
+    marginTop: 20,
   },
   titleQuiz: {
     fontSize: 16,

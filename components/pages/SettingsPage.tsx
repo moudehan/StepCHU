@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
+  View,
   ScrollView,
   Text,
-  View,
   Switch,
   TouchableOpacity,
 } from "react-native";
@@ -68,7 +67,7 @@ export default function SettingsPage({ navigation }: SettingsPageProps) {
     );
   };
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       {/* NavBar */}
       <NavBar
         paramIcon={false}
@@ -115,7 +114,7 @@ export default function SettingsPage({ navigation }: SettingsPageProps) {
         setActiveTab={setActiveTab}
         navigation={navigation}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
