@@ -11,4 +11,8 @@ export type UserType = {
     id: string;
     pointsEarned: boolean;
   }[];
+  challenges: {
+    id: string;
+    completed: boolean;
+  }[];
 };

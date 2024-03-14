@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet } from "react-native";
-import { collection, getDoc, getDocs, DocumentReference } from "firebase/firestore";
+import {
+  collection,
+  getDoc,
+  getDocs,
+  DocumentReference,
+} from "firebase/firestore";
 import { db } from "../../fireBase/FirebaseConfig";
 import NavBar from "../navDrawer/NavBar";
 import TabBar from "../navDrawer/TabBar";
@@ -17,6 +22,8 @@ interface EventTypes {
 }
 
 interface Challenges {
+  BadgeId: string;
+  points: number;
   id: string;
   title: string;
   start: string;
@@ -39,7 +46,7 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
           if (data.type instanceof DocumentReference) {
             const typeDoc = await getDoc(data.type);
             typeData = typeDoc.data() as EventTypes;
-          } else if (typeof data.type === 'object') {
+          } else if (typeof data.type === "object") {
             typeData = data.type as EventTypes;
           } else {
             console.error("Invalid type reference:", data.type);
@@ -47,13 +54,15 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
           if (typeData) {
             return {
               id: doc.id,
+              BadgeId: data.BadgeId,
+              points: data.points,
               title: data.title,
               start: data.start,
               end: data.end,
               quantity: data.quantity,
               type: {
                 id: typeData.id,
-                name: typeData.name
+                name: typeData.name,
               },
             };
           } else {
@@ -61,7 +70,9 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
           }
         });
         const resolvedChallenges = await Promise.all(challengesData);
-        const validChallenges = resolvedChallenges.filter(challenge => challenge !== null) as Challenges[];
+        const validChallenges = resolvedChallenges.filter(
+          (challenge) => challenge !== null
+        ) as Challenges[];
         setChallenges(validChallenges);
       };
       fetchChallenges();
@@ -84,12 +95,15 @@ export default function ChallengesPage({ navigation }: ChallengesPageProps) {
         extraData={challenges}
         renderItem={({ item, index }) => (
           <ChallengeBlocs
-          key={index.toString()}
+            key={index.toString()}
             title={item.title}
             quantity={item.quantity}
             type={item.type}
             start={item.start}
             end={item.end}
+            id={item.id}
+            badgeId={item.BadgeId}
+            points={item.points}
           />
         )}
         ItemSeparatorComponent={ChallengeLineSeparator}
