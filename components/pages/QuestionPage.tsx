@@ -222,7 +222,6 @@ export default function QuestionPage({ navigation, route }: QuestionPageProps) {
               }
               if (questionIndex < quiz.questions.length - 1) {
                 setShowAnswer(true);
-                stopClock();
                 await new Promise((r) => setTimeout(r, 2000));
 
                 setShowAnswer(false);
