@@ -11,6 +11,7 @@ import { StepCounter } from "../steps/StepCounter";
 import LoadingPage from "./LoadingPage";
 import { useUserAlert } from "../Modals/AlertUserModal";
 import TitleBlocks from "../blocs/Title";
+import useBackgroundNotification from "../notificaton/stepCounterNotif";
 
 interface WelcomePageProps {
   navigation: any;
@@ -19,7 +20,7 @@ export default function WelcomePage({ navigation }: WelcomePageProps) {
   const { currentStepCount } = StepCounter();
   const [activeTab, setActiveTab] = useState("home");
   const [isLoading, setIsLoading] = useState(false);
-  // useBackgroundNotification();
+  useBackgroundNotification();
 
   useUserAlert(navigation, setIsLoading);
 
