@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import * as Progress from "react-native-progress";
 import {
-  Timestamp,
   collection,
   doc,
   getDoc,
@@ -14,11 +13,14 @@ import { db } from "../../fireBase/FirebaseConfig";
 import { useAuth } from "../../AuthContext";
 
 interface ChallengeBlocsProps {
-  title: String;
+  title: string;
   quantity: number;
-  type: string;
-  start: Timestamp;
-  end: Timestamp;
+  type: {
+    id: string;
+    name: string;
+  };
+  start: string;
+  end: string;
 }
 
 export default function ChallengeBlocs({
@@ -53,21 +55,25 @@ export default function ChallengeBlocs({
       const userData = (await getDoc(userDocRef)).data();
 
       let steps: number = 0;
-      let quizz: number = userData?.quiz?.length | 0;
+      let quizz: number = userData?.quiz?.length || 0;
       const stepsQuery = query(
         collection(db, "steps"),
-        where("user.userId", "==", authState.userId)
+        where("userId", "==", authState.userId)
       );
       const querySnapshot = await getDocs(stepsQuery);
+      
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         const date = new Date(data.date);
+        const startDate = new Date(start);
+        const endDate = new Date(end);
         if (
-          date.setUTCHours(0, 0, 0, 0) >=
-            start.toDate().setUTCHours(0, 0, 0, 0) &&
-          date.setUTCHours(0, 0, 0, 0) <= end.toDate().setUTCHours(0, 0, 0, 0)
+          date.setUTCHours(0, 0, 0, 0) >= startDate.setUTCHours(0, 0, 0, 0) &&
+          date.setUTCHours(0, 0, 0, 0) <= endDate.setUTCHours(0, 0, 0, 0)
         ) {
-          steps = steps + parseInt(data.steps);
+          if (type.name === "steps") {
+            steps += parseInt(data.steps);
+          }
         }
       });
       setStepsData(steps);
@@ -75,31 +81,31 @@ export default function ChallengeBlocs({
     };
 
     fetchSteps();
-  }, [authState.userId]);
+  }, [authState.userId, start, end, type.name]);
 
   return (
-    <View style={Styles.container}>
-      <Text style={Styles.title}>{title}</Text>
-      <View style={Styles.dates}>
+    <View style={styles.container}>
+      <Text style={styles.title}>{title}</Text>
+      <View style={styles.dates}>
         <Text>
-          du {start.toDate().getDate().toString().padStart(2, "0")}{" "}
-          {months[start.toDate().getMonth()]} {start.toDate().getFullYear()}{" "}
+          du {new Date(start).getDate().toString().padStart(2, "0")}{" "}
+          {months[new Date(start).getMonth()]} {new Date(start).getFullYear()}{" "}
         </Text>
         <Text>
-          au {end.toDate().getDate().toString().padStart(2, "0")}{" "}
-          {months[end.toDate().getMonth()]} {end.toDate().getFullYear()}
+          au {new Date(end).getDate().toString().padStart(2, "0")}{" "}
+          {months[new Date(end).getMonth()]} {new Date(end).getFullYear()}
         </Text>
       </View>
 
       <View>
-        {type == "steps" && (
+        {type.name == "steps" && (
           <View>
-            <Text style={Styles.objectiveSteps}>
+            <Text style={styles.objectiveSteps}>
               {stepsData}/{quantity}
             </Text>
-            {start.toDate().setUTCHours(0, 0, 0, 0) <=
+            {new Date(start).setUTCHours(0, 0, 0, 0) <=
               today.setUTCHours(0, 0, 0, 0) &&
-              end.toDate().setUTCHours(0, 0, 0, 0) >=
+              new Date(end).setUTCHours(0, 0, 0, 0) >=
                 today.setUTCHours(0, 0, 0, 0) && (
                 <Progress.Bar
                   progress={stepsData / quantity}
@@ -110,15 +116,15 @@ export default function ChallengeBlocs({
               )}
           </View>
         )}
-        {type == "quiz" && (
+        {type.name == "quiz" && (
           <View>
-            <Text style={Styles.objectiveSteps}>
+            <Text style={styles.objectiveSteps}>
               {quizNumber}/{quantity}
             </Text>
 
-            {start.toDate().setUTCHours(0, 0, 0, 0) <=
+            {new Date(start).setUTCHours(0, 0, 0, 0) <=
               today.setUTCHours(0, 0, 0, 0) &&
-              end.toDate().setUTCHours(0, 0, 0, 0) >=
+              new Date(end).setUTCHours(0, 0, 0, 0) >=
                 today.setUTCHours(0, 0, 0, 0) && (
                 <Progress.Bar
                   progress={quizNumber / quantity}
@@ -131,19 +137,19 @@ export default function ChallengeBlocs({
         )}
       </View>
 
-      {start.toDate().setUTCHours(0, 0, 0, 0) >
+      {new Date(start).setUTCHours(0, 0, 0, 0) >
         today.setUTCHours(0, 0, 0, 0) && (
-        <Text style={Styles.soonText}>Le challenge démarre bientôt !</Text>
+        <Text style={styles.soonText}>Le challenge démarre bientôt !</Text>
       )}
 
-      {end.toDate().setUTCHours(0, 0, 0, 0) < today.setUTCHours(0, 0, 0, 0) && (
-        <Text style={Styles.soonText}>Le challenge est terminé !</Text>
+      {new Date(end).setUTCHours(0, 0, 0, 0) < today.setUTCHours(0, 0, 0, 0) && (
+        <Text style={styles.soonText}>Le challenge est terminé !</Text>
       )}
     </View>
   );
 }
 
-const Styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     margin: 20,
   },
