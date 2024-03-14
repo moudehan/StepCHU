@@ -33,10 +33,10 @@ const TabBar: React.FC<TabBarProps> = ({
       screen: "home",
     },
     {
-      name: "quiz",
+      name: "Quiz",
       label: "Quiz",
       icon: "school-outline",
-      screen: "QuizScreen",
+      screen: "Quiz",
     },
     {
       name: "profil",

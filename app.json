@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "stepCHU",
-    "slug": "stepCHU",
+    "name": "stepchu",
+    "slug": "stepchu",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -45,11 +45,6 @@
           }
         }
       ]
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "57f48b4a-876a-429a-8397-6128d0598085"
-      }
-    }
+    ]
   }
 }

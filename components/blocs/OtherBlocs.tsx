@@ -12,12 +12,13 @@ const data = [
   {
     title: "Quiz",
     image: require("../../assets/quizLogo.png"),
-    screen: "",
+    screen: "Quiz",
   },
   {
     title: "Mes Badges",
     image: require("../../assets/badgesLogo.png"),
-    screen: "Settings",
+    screen: "Badges",
+
   },
   {
     title: "Mes statistique",
