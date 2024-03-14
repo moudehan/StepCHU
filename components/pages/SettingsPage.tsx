@@ -77,14 +77,14 @@ export default function SettingsPage({ navigation }: SettingsPageProps) {
       />
 
       <ScrollView style={styles.container}>
-        <Text style={styles.mainTitle}>Gérer vos autorisations</Text>
+        {/* <Text style={styles.mainTitle}>Gérer vos autorisations</Text>
         <SettingItem
           title="Autoriser les notifications"
           iconName="notifications"
           isSwitch={true}
           onToggle={toggleSwitch}
           switchValue={isNotificationsEnabled}
-        />
+        /> */}
         <Text style={styles.mainTitle}>Documentation</Text>
         <SettingItem
           title="Didacticiel"
