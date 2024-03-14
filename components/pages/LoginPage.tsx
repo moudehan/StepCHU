@@ -10,7 +10,6 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import { SelectList } from "react-native-dropdown-select-list";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
@@ -28,11 +27,12 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useAuth } from "../../AuthContext";
-import { JSHash, CONSTANTS } from "react-native-hash";
+
 import { fetchSecurityQuestions } from "../services/SecurityQuestions";
 import { SecurityQuestion } from "../../types/SecurityQuestionTypes";
 import { UserType } from "../../types/UserType";
 import Icon from "react-native-vector-icons/FontAwesome";
+import bcrypt from "react-native-bcrypt";
 
 interface LoginPageProps {
   navigation: any;
@@ -118,10 +118,11 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       }
 
       const userDocRef = doc(db, "utilisateurs", userId);
-      const hashedAnswer = await JSHash(
-        confirmationPassword,
-        CONSTANTS.HashAlgorithms.sha256
-      );
+      const hashedAnswer = bcrypt.hashSync(password, 10);
+      // const hashedAnswer = await JSHash(
+      //   confirmationPassword,
+      //   CONSTANTS.HashAlgorithms.sha256
+      // );
 
       try {
         await updateDoc(userDocRef, {
@@ -203,10 +204,11 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
       }
 
       const userData = userDocSnap.data();
-      const hashedAnswerInput = await JSHash(
-        password,
-        CONSTANTS.HashAlgorithms.sha256
-      );
+      const hashedAnswerInput = bcrypt.compareSync(password, userData.password);
+      // const hashedAnswerInput = await JSHash(
+      //   password,
+      //   CONSTANTS.HashAlgorithms.sha256
+      // );
 
       if (hashedAnswerInput === userData.password) {
         await updateDoc(userDocRef, { phoneId: deviceUUID });

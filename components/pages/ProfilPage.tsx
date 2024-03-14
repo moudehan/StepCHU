@@ -122,7 +122,14 @@ export default function ProfilPage({ navigation }: ProfilPageProps) {
         {/* <Icon name="stats-chart" color="white" style={styles.editIcon} /> */}
         <View style={styles.profileSection}>
           <TouchableOpacity onPress={() => setShowModal(true)}>
-            <Image source={avatars[avatarId - 1]} style={styles.profilePic} />
+            {avatarId && avatarId > 0 && avatarId <= avatars.length ? (
+              <Image source={avatars[avatarId - 1]} style={styles.profilePic} />
+            ) : (
+              <Image
+                source={require("../../assets/splash.png")}
+                style={styles.profilePic}
+              />
+            )}
           </TouchableOpacity>
           <Text style={styles.profileUserName}>
             utilisateur : {userData.name}

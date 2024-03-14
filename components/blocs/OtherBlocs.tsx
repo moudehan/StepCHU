@@ -18,10 +18,9 @@ const data = [
     title: "Mes Badges",
     image: require("../../assets/badgesLogo.png"),
     screen: "Badges",
-
   },
   {
-    title: "Mes statistique",
+    title: "Mes statistiques",
     image: require("../../assets/stats-chart.png"),
     screen: "Stats",
   },

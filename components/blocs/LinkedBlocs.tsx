@@ -57,7 +57,7 @@ const LinkedBlocks = ({ navigation }: AboutPageProps) => {
             </View>
             <View style={styles.imageContainer}>
               <Image
-                source={require("../../assets/news.png")}
+                source={require("../../assets/news.jpg")}
                 style={styles.image}
               />
             </View>
